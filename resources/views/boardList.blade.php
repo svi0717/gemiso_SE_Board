@@ -43,7 +43,6 @@
                     <button type="submit" class="btn btn-primary">검색</button>
                 </form>
             </div>
-            
         </div>
 
         <!-- Table -->
