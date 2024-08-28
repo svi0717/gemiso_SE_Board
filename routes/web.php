@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+Route::get('/testboard', function () {
     return view('testboard');
 });
 
@@ -24,5 +24,9 @@ Route::get('/buttontest', function () {
 
 Route::get('/boardList', function () {
     return view('boardList');
+});
+
+Route::get('/', function () {
+    return view('login');
 });
 
