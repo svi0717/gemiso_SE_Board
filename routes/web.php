@@ -23,7 +23,6 @@ Route::get('/boardList', function () {
     return view('boardList');
 });
 
-
 Route::get('/boardview', function () {
     return view('boardview');
 });
@@ -34,6 +33,26 @@ Route::get('/insert', function () {
 
 Route::get('/', function () {
     return view('login');
+});
+
+Route::get('/join', function () {
+    return view('join');
+});
+
+Route::get('/findId', function () {
+    return view('findId');
+});
+
+Route::get('/findPassword', function () {
+    return view('findPassword');
+});
+
+Route::get('/findIdCompleted', function () {
+    return view('findIdCompleted');
+});
+
+Route::get('/findPasswordCompleted', function () {
+    return view('findPasswordCompleted');
 });
 
 
