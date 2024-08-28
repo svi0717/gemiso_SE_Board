@@ -8,6 +8,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <link rel="stylesheet" href="/css/header.css">
+    <script src="{{ asset('js/buttons.js') }}" defer></script>
     
     <style>
         .btn-custom {
@@ -52,14 +53,9 @@
     <main class="container col-md-10 mt-4">
         <div class="row">
             <!-- Sidebar -->
-            <div class="col-md-2 sidebar">
-                <div>
-                    <a class="btn btn-primary btn-custom" href="#">게시판</a>
-                </div>
-                <div>
-                    <a class="btn btn-primary btn-custom" href="#">일정관리</a>
-                </div>
-            </div>
+            <div class="col-md-2 sidebar" id="sidebar-button"></div>
+            <br>
+            
 
             <!-- Content -->
             <div class="col-md-8 content">
@@ -68,4 +64,9 @@
         </div>
     </main>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+            addButtonsToPage();
+        });
+</script>
 </html>

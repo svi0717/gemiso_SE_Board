@@ -6,7 +6,6 @@ Route::get('/', function () {
     return view('testboard');
 });
 
-
 Route::get('/schedule', function () {
     return view('schedule');
 });
