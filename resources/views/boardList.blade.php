@@ -16,7 +16,7 @@
         background-color: #f8f9fa;
     }
       .table tbody tr:last-child {
-            border-bottom: 2px solid #dee2e6; /* Light gray border for the last row */
+            border-bottom: 2px solid #dee2e6; 
         }
 </style>
 <body>
@@ -45,7 +45,6 @@
             </div>
         </div>
 
-        <!-- Table -->
         <table class="table">
             <thead class="table-header">
                 <tr>
