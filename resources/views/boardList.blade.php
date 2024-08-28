@@ -62,7 +62,9 @@
             <tbody>
                 <tr>
                     <td>1</td>
-                    <td>안녕하세요</td>
+                    <td>
+                        <a href="/boardview">안녕하세요</a>
+                    </td>
                     <td>신준수</td>
                     <td>테스트입니다</td>
                     <td>2024.08.12</td>
