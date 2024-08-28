@@ -42,16 +42,16 @@
 <div class="container ml-5">
     <div class="card p-4">
         <div class="text-center mb-4">
-            <h4>제머나이소프트 SE팀</h4>
+            <h3>로그인</h2>
         </div>
         <form>
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">아이디</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <label for="id" class="form-label">아이디</label>
+                <input type="text" class="form-control" id="id" placeholder="아이디">
             </div>
             <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">비밀번호</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
+                <input type="password" class="form-control" id="password" placeholder="비밀번호">
             </div>
             <div class="mb-3 form-check">
                 <div class="d-inline-block mr-5 ml-4">
@@ -64,13 +64,13 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary btn-block">로그인</button>
-            <a href="#" class="btn btn-primary btn-block">회원가입</a>
+            <a href="/join" class="btn btn-secondary btn-block">회원가입</a>
         </form>
         
         <!-- 아이디 찾기, 비밀번호 찾기, 회원가입 -->
         <div class="link-group mt-3">
-            <a href="#" class="text-decoration-none">아이디 찾기</a>
-            <a href="#" class="text-decoration-none">비밀번호 찾기</a>
+            <a href="/findId" class="text-decoration-none">아이디 찾기</a>
+            <a href="/findPassword" class="text-decoration-none">비밀번호 찾기</a>
         </div>
     </div>
 </div>
