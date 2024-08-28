@@ -6,6 +6,7 @@ Route::get('/', function () {
     return view('testboard');
 });
 
+
 Route::get('/schedule', function () {
     return view('schedule');
 });
@@ -21,3 +22,8 @@ Route::get('/deleteboard', function () {
 Route::get('/buttontest', function () {
     return view('buttontest');
 });
+
+Route::get('/boardList', function () {
+    return view('boardList');
+});
+
