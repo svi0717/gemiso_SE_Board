@@ -1,0 +1,16 @@
+.navbar {
+    background-color: #007bff; /* 배경 색상: Bootstrap Primary 색상 */
+}
+
+.navbar .navbar-brand {
+    color: #fff; /* 텍스트 색상: 흰색 */
+}
+
+/* 호버 및 액티브 상태 스타일 */
+.navbar-nav .nav-link {
+    color: #fff;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ddd; /* 호버 시 색상 */
+}
