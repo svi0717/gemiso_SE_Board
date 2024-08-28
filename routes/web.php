@@ -4,11 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
-    return view('boardList');
-
-Route::get('/testboard', function () {
-    return view('testboard');
-
+    return view('login');
 });
 
 Route::get('/schedule', function () {
@@ -21,10 +17,6 @@ Route::get('/editboard', function () {
 
 Route::get('/deleteboard', function () {
     return view('deleteboard');
-});
-
-Route::get('/buttontest', function () {
-    return view('buttontest');
 });
 
 Route::get('/boardList', function () {
