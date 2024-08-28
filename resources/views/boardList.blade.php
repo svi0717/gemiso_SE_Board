@@ -27,6 +27,9 @@
 @section('content')
     <div class="container mt-5">
         <div class="row mb-4">
+            <Strong>
+            <div>게시판 목록</div>
+            </Strong>
             <div class="col-md-12">
                 <form class="form-inline">
                     <div class="form-group mr-2">

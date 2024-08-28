@@ -2,8 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('/', function () {
+    return view('boardList');
+
 Route::get('/testboard', function () {
     return view('testboard');
+
 });
 
 Route::get('/schedule', function () {
@@ -26,7 +31,17 @@ Route::get('/boardList', function () {
     return view('boardList');
 });
 
+
+Route::get('/boardview', function () {
+    return view('boardview');
+});
+
+Route::get('/insert', function () {
+    return view('insert');
+});
+
 Route::get('/', function () {
     return view('login');
 });
+
 
