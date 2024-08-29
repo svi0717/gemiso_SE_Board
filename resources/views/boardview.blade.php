@@ -18,6 +18,7 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
+
         }
         .card-body {
             white-space: pre-wrap; 
@@ -29,6 +30,7 @@
         .title-section {
             margin-bottom: 10px; 
         }
+
         .author-date {
             display: flex;
             align-items: center;
@@ -47,6 +49,7 @@
         }
         .data-view {
             color: #000000;
+            text-align: right;
         }
         .title-author {
             display: flex;
@@ -72,13 +75,13 @@
                         게시물 조회
                         <div class="date-view" id="current_date"></div>
                     </div>
+
                     <div class="card-body content-layout">
                         <!-- 게시물 제목과 작성자 -->
                         <div class="title-author">
                             <h5 class="card-title">게시물 제목</h5>
                             <div class="card-subtitle text-muted">작성자: 작성자 이름</div>
                         </div>
-
                         <!-- 게시물 내용 -->
                         <div class="content">여기에 게시물의 내용이 들어갑니다. 게시물의 내용은 본문을 나타내며, 여러 줄에 걸쳐 있을 수 있습니다.</div>
                     </div>
