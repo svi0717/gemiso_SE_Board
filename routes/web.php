@@ -36,4 +36,8 @@ Route::get('/', function () {
     return view('login');
 });
 
+Route::get('/test', function () {
+    return view('test');
+});
+
 

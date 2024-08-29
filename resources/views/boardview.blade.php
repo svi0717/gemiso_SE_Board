@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시판 목록</title>
+    <title>게시판 조회</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <style>
@@ -15,6 +15,9 @@
             background-color: #f8f9fa;
             font-weight: bold;
             padding: 10px 15px;
+            display: flex; /* Use flexbox for alignment */
+            justify-content: space-between; /* Distribute space between elements */
+            align-items: center; /* Center items vertically */
         }
         .card-body {
             white-space: pre-wrap; /* Preserve whitespace formatting in content */
@@ -23,9 +26,6 @@
         .content-layout {
             margin-bottom: 100px;
             text-align: left; /* Ensure all content is left-aligned */
-        }
-        .title-section {
-            margin-bottom: 5px; /* Adjust space between title and author */
         }
         .author-date {
             display: flex;
@@ -44,6 +44,7 @@
         }
         .data-view {
             color: #000000;
+            text-align: right;
         }
     </style>
 </head>
@@ -58,20 +59,18 @@
             <div class="col-12 centered-form">
                 <div class="card">
                     <div class="card-header">
-                        게시물 조회
+                        <span>게시물 조회</span>
+                        <span class="date-view" id="current_date"></span>
                     </div>
+
                     <div class="card-body content-layout">
                         <!-- 게시물 제목 -->
-                        <h5 class="card-title">게시물 제목</h5>
-                        
+                        <span>게시물 제목</span>
+
                         <!-- 작성자와 날짜 -->
                         <div class="author-date">
-                            <div class="card-subtitle text-muted" >작성자: 작성자 이름
-                            <div class="date-view" id="current_date"></div>
-                         </div>
-                            <div class="date-view" id="current_date"></div>
+                            <div class="card-subtitle text-muted">작성자: 작성자 이름</div>
                         </div>
-
                         <!-- 게시물 내용 -->
                         <p class="mt-3">여기에 게시물의 내용이 들어갑니다. 게시물의 내용은 본문을 나타내며, 여러 줄에 걸쳐 있을 수 있습니다.</p>
                     </div>
