@@ -2,16 +2,17 @@
 <html lang='en'>
   <head>
   <style>
-    #calendar {
-    max-width: 700px; /* 원하는 너비로 조정 */
+      #calendar {
+    max-width: 900px; /* 원하는 너비로 조정 */
     margin: 40px auto; /* 중앙 정렬 */
-    height: 600px; /* 원하는 높이로 조정 */
+    height: 700px; /* 원하는 높이로 조정 */
     color: #000000 !important;
 }
   </style>
     <meta charset='utf-8' />
     <link href='css/main.css' rel='stylesheet' />
     <script src='js/main.js'></script>
+    <script src='js/locales-all.js'></script>
     <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> -->
     <script>
     	document.addEventListener('DOMContentLoaded', function() {
@@ -23,12 +24,15 @@
                     center: 'title',
                     right: 'dayGridMonth,dayGridWeek,dayGridDay'
                 },
-
+                locale: "ko",
                 selectable: true,
                 selectMirror: true,
-
                 navLinks: true, // can click day/week names to navigate views
                 editable: true,
+                dayCellContent: function(arg) {
+                  // 날짜의 '일'자를 제외하고 숫자만 표시
+                  arg.dayNumberText = arg.date.getDate(); 
+                },
                 // Create new event
                 select: function (arg) {
                     Swal.fire({
