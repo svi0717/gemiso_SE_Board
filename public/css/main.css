@@ -288,7 +288,7 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
   }
 .fc .fc-toolbar.fc-header-toolbar {
     margin-bottom: 1.5em;
-    color: #ff0000 !important;
+    color: #000000 !important;
   }
 .fc .fc-toolbar.fc-footer-toolbar {
     margin-top: 1.5em;
@@ -429,6 +429,7 @@ When it's NOT activated, the fc-button classes won't even be in the DOM.
 .fc .fc-col-header-cell-cushion {
     display: inline-block; /* x-browser for when sticky (when multi-tier header) */
     padding: 2px 4px;
+    color: #000000 !important;
   }
 .fc .fc-bg-event,
   .fc .fc-non-business,
@@ -740,6 +741,7 @@ A HORIZONTAL event
     position: relative;
     z-index: 4;
     padding: 4px;
+    color: #000000 !important;
   }
 .fc {
 
