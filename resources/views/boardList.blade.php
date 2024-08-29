@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판 목록</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 </head>
 <style>
     .col-md-12 {
@@ -15,9 +13,18 @@
     .table-header {
         background-color: #f8f9fa;
     }
-      .table tbody tr:last-child {
-            border-bottom: 2px solid #dee2e6; 
-        }
+    .table tbody tr:last-child {
+        border-bottom: 2px solid #dee2e6; 
+    }
+
+    table a {
+        color: black !important;
+    }
+
+    .table {
+        table-layout: auto; 
+        text-align: center; 
+    }
 </style>
 <body>
 @extends('layouts.header')
@@ -28,7 +35,7 @@
     <div class="container mt-5">
         <div class="row mb-4">
             <Strong>
-            <div>게시판 목록</div>
+                <div>게시판 목록</div>
             </Strong>
             <div class="col-md-12">
                 <form class="form-inline">
@@ -47,16 +54,14 @@
                 </form>
             </div>
         </div>
-
         <table class="table">
             <thead class="table-header">
                 <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>내용</th>
+                    <th style="width: 90px;">번호</th>
+                    <th style="width: 400px;">제목</th>
+                    <th style="width: 150px;">작성자</th>
                     <th>등록일자</th>
-                    <th>작성일자</th>
+                    <th>수정일자</th>
                 </tr>
             </thead>
             <tbody>
@@ -66,7 +71,6 @@
                         <a href="/boardview">안녕하세요</a>
                     </td>
                     <td>신준수</td>
-                    <td>테스트입니다</td>
                     <td>2024.08.12</td>
                     <td>2024.08.25</td>
                 </tr>
@@ -74,47 +78,62 @@
                     <td>2</td>
                     <td>안녕하세요</td>
                     <td>김영희</td>
-                    <td>테스트 내용</td>
                     <td>2024.08.13</td>
                     <td>2024.08.26</td>
                 </tr>
                 <tr>
-                    <td>2</td>
+                    <td>3</td>
                     <td>안녕하세요</td>
                     <td>김영희</td>
-                    <td>테스트 내용</td>
                     <td>2024.08.13</td>
                     <td>2024.08.26</td>
                 </tr>
                 <tr>
-                    <td>2</td>
+                    <td>4</td>
                     <td>안녕하세요</td>
                     <td>김영희</td>
-                    <td>테스트 내용</td>
                     <td>2024.08.13</td>
                     <td>2024.08.26</td>
                 </tr>
                 <tr>
-                    <td>2</td>
+                    <td>5</td>
                     <td>안녕하세요</td>
                     <td>김영희</td>
-                    <td>테스트 내용</td>
                     <td>2024.08.13</td>
                     <td>2024.08.26</td>
                 </tr>
                 <tr>
-                    <td>2</td>
+                    <td>6</td>
                     <td>안녕하세요</td>
                     <td>김영희</td>
-                    <td>테스트 내용</td>
                     <td>2024.08.13</td>
                     <td>2024.08.26</td>
                 </tr>
                 <tr>
-                    <td>2</td>
+                    <td>7</td>
                     <td>안녕하세요</td>
                     <td>김영희</td>
-                    <td>테스트 내용</td>
+                    <td>2024.08.13</td>
+                    <td>2024.08.26</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>안녕하세요</td>
+                    <td>김영희</td>
+                    <td>2024.08.13</td>
+                    <td>2024.08.26</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>안녕하세요</td>
+                    <td>김영희</td>
+                    <td>2024.08.13</td>
+                    <td>2024.08.26</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>안녕하세요</td>
+                    <td>김영희</td>
                     <td>2024.08.13</td>
                     <td>2024.08.26</td>
                 </tr>
