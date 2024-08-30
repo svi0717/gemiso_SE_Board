@@ -8,7 +8,6 @@
 <style>
     .col-md-12 {
         margin-left: 315px;
-
     }
     .table-header {
         background-color: #f8f9fa;
@@ -34,24 +33,24 @@
 @section('content')
     <div class="container mt-5">
         <div class="row mb-4">
-            <Strong>
+            <strong>
                 <div>게시판 목록</div>
-            </Strong>
+            </strong>
             <div class="col-md-12">
-                <form class="form-inline">
-                    <div class="form-group mr-2">
-                        <input type="date" class="form-control" id="startDate">
-                    </div>
-                    <div class="form-group mr-2">
-                        <label for="endDate" class="mr-2">~</label>
-                        <input type="date" class="form-control" id="endDate">
-                    </div>
-                    <div class="form-group mr-2">
-                        <label for="searchQuery" class="mr-2">검색</label>
-                        <input type="text" class="form-control" id="searchQuery" placeholder="검색어 입력">
-                    </div>
-                    <button type="submit" class="btn btn-primary">검색</button>
-                </form>
+            <form class="form-inline" method="GET" action="{{ route('boardlist') }}">
+                <div class="form-group mr-2">
+                    <input type="date" class="form-control" id="startDate" name="start_date">
+                </div>
+                <div class="form-group mr-2">
+                    <label for="endDate" class="mr-2">~</label>
+                    <input type="date" class="form-control" id="endDate" name="end_date">
+                </div>
+                <div class="form-group mr-2">
+                    <label for="searchQuery" class="mr-2">검색</label>
+                    <input type="text" class="form-control" id="searchQuery" name="search" placeholder="검색어 입력" value="{{ request()->query('search') }}">
+                </div>
+                <button type="submit" class="btn btn-primary">검색</button>
+            </form>
             </div>
         </div>
         <table class="table">
@@ -66,14 +65,14 @@
                 </tr>
             </thead>
             <tbody>
-            <tr>
-             @foreach ($board as $item)
+                @foreach ($board as $item)
+                <tr>
                     <td>{{ $item->board_id }}</td>
                     <td>
                         <!-- 제목을 클릭하면 게시글 상세 페이지로 이동 -->
                         <a href="{{ route('boards.show', ['id' => $item->board_id]) }}">{{ $item->title }}</a>
                     </td>
-                    <td>{{ $item->user_id }}</td>
+                    <td>{{ $item->user_name }}</td>
                     <td>{{ $item->reg_date }}</td>
                     <td>{{ $item->upd_date }}</td>
                     <td>{{ $item->views }}</td>
