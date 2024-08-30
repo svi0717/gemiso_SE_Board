@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판 목록</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <style>
         .centered-form {
             max-width: 600px; /* Optional: Set a maximum width for the form */
@@ -16,6 +14,9 @@
         }
         .table tbody tr:last-child {
             border-bottom: 2px solid #dee2e6; /* Light gray border for the last row */
+        }
+        #category {
+            width: 200px;
         }
     </style>
 </head>
@@ -30,12 +31,19 @@
             <div class="col-12 centered-form">
                 <h3 class="text-center">게시판 등록</h3>
                 <div class="mb-3">
+                    <label for="category" class="form-label">카테고리 선택</label>
+                    <select class="form-control" id="category">
+                        <option value="게시판">게시판</option>
+                        <option value="일정관리">일정관리</option>
+                    </select>
+                </div>
+                <div class="mb-3">
                     <label for="title" class="form-label">제목</label>
                     <input type="text" class="form-control" id="title" placeholder="제목">
                 </div>
                 <div class="mb-3">
                     <label for="Author" class="form-label">작성자</label>
-                    <input type="text" class="form-control" id="Author" placeholder="작성자">
+                    <input type="text" class="form-control" id="Author" placeholder="작성자" disabled>
                 </div>
                 <div class="mb-3">
                     <label for="content" class="form-label">내용</label>

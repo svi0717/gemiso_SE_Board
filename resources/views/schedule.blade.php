@@ -30,8 +30,10 @@
                 navLinks: true, // can click day/week names to navigate views
                 editable: true,
                 dayCellContent: function(arg) {
-                  // 날짜의 '일'자를 제외하고 숫자만 표시
-                  arg.dayNumberText = arg.date.getDate(); 
+                    if (arg.view.type === 'dayGridMonth') { 
+                        // Month view에서만 날짜에 숫자만 표시
+                        arg.dayNumberText = arg.date.getDate();
+                    }
                 },
                 // Create new event
                 select: function (arg) {
@@ -143,15 +145,16 @@
                     },
                     {
                     title: 'Happy Hour',
-                    start: '2022-07-12T17:30:00'
+                    start: '2024-08-12T17:30:00'
                     },
                     {
                     title: 'Dinner',
-                    start: '2022-07-12T20:00:00'
+                    start: '2024-08-12'
                     },
                     {
                     title: 'Birthday Party',
-                    start: '2022-07-13T07:00:00'
+                    url: 'http://google.com/',
+                    start: '2024-08-13'
                     },
                     {
                     title: 'Click for Google',

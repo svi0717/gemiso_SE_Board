@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BoardController;
+
 
 
 Route::get('/', function () {
@@ -19,9 +21,11 @@ Route::get('/deleteboard', function () {
     return view('deleteboard');
 });
 
-Route::get('/boardList', function () {
-    return view('boardList');
-});
+// Route::get('/boardList', function () {
+//     return view('boardList');
+// });
+
+Route::get('/boardList', [BoardController::class, 'boardList']);
 
 Route::get('/boardview', function () {
     return view('boardview');
@@ -54,5 +58,3 @@ Route::get('/findIdCompleted', function () {
 Route::get('/findPasswordCompleted', function () {
     return view('findPasswordCompleted');
 });
-
-

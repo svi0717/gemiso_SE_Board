@@ -32,6 +32,8 @@
 @section('title', '게시판 목록')
 
 @section('content')
+
+
     <div class="container mt-5">
         <div class="row mb-4">
             <Strong>
@@ -62,80 +64,19 @@
                     <th style="width: 150px;">작성자</th>
                     <th>등록일자</th>
                     <th>수정일자</th>
+                    <th>조회수</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
-                    <td>
-                        <a href="/boardview">안녕하세요</a>
-                    </td>
-                    <td>신준수</td>
-                    <td>2024.08.12</td>
-                    <td>2024.08.25</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>안녕하세요</td>
-                    <td>김영희</td>
-                    <td>2024.08.13</td>
-                    <td>2024.08.26</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>안녕하세요</td>
-                    <td>김영희</td>
-                    <td>2024.08.13</td>
-                    <td>2024.08.26</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>안녕하세요</td>
-                    <td>김영희</td>
-                    <td>2024.08.13</td>
-                    <td>2024.08.26</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>안녕하세요</td>
-                    <td>김영희</td>
-                    <td>2024.08.13</td>
-                    <td>2024.08.26</td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>안녕하세요</td>
-                    <td>김영희</td>
-                    <td>2024.08.13</td>
-                    <td>2024.08.26</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>안녕하세요</td>
-                    <td>김영희</td>
-                    <td>2024.08.13</td>
-                    <td>2024.08.26</td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>안녕하세요</td>
-                    <td>김영희</td>
-                    <td>2024.08.13</td>
-                    <td>2024.08.26</td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>안녕하세요</td>
-                    <td>김영희</td>
-                    <td>2024.08.13</td>
-                    <td>2024.08.26</td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>안녕하세요</td>
-                    <td>김영희</td>
-                    <td>2024.08.13</td>
-                    <td>2024.08.26</td>
+                    @foreach ($boards as $board)
+                    <td>{{ $board->board_id }}</td>
+                    <td>{{ $board->title }}</td>
+                    <td>{{ $board->writer }}</td>
+                    <td>{{ $board->reg_date }}</td>
+                    <td>{{ $board->upd_date }}</td>
+                    <td>{{ $board->views }}</td>
+                    @endforeach
                 </tr>
             </tbody>
         </table>
