@@ -35,6 +35,9 @@
                         arg.dayNumberText = arg.date.getDate();
                     }
                 },
+                // dateClick: function(arg){
+                //     alert('날짜가 클릭되었습니다!!');
+                // },
                 // Create new event
                 select: function (arg) {
                     Swal.fire({
