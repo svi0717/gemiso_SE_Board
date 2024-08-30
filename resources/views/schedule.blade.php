@@ -30,9 +30,14 @@
                 navLinks: true, // can click day/week names to navigate views
                 editable: true,
                 dayCellContent: function(arg) {
-                  // 날짜의 '일'자를 제외하고 숫자만 표시
-                  arg.dayNumberText = arg.date.getDate(); 
+                    if (arg.view.type === 'dayGridMonth') { 
+                        // Month view에서만 날짜에 숫자만 표시
+                        arg.dayNumberText = arg.date.getDate();
+                    }
                 },
+                // dateClick: function(arg){
+                //     alert('날짜가 클릭되었습니다!!');
+                // },
                 // Create new event
                 select: function (arg) {
                     Swal.fire({

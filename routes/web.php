@@ -54,5 +54,3 @@ Route::get('/findIdCompleted', function () {
 Route::get('/findPasswordCompleted', function () {
     return view('findPasswordCompleted');
 });
-
-
