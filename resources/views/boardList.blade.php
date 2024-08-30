@@ -32,8 +32,6 @@
 @section('title', '게시판 목록')
 
 @section('content')
-
-
     <div class="container mt-5">
         <div class="row mb-4">
             <Strong>
@@ -68,16 +66,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    @foreach ($boards as $board)
-                    <td>{{ $board->board_id }}</td>
-                    <td>{{ $board->title }}</td>
-                    <td>{{ $board->writer }}</td>
-                    <td>{{ $board->reg_date }}</td>
-                    <td>{{ $board->upd_date }}</td>
-                    <td>{{ $board->views }}</td>
-                    @endforeach
+            <tr>
+             @foreach ($board as $item)
+                    <td>{{ $item->board_id }}</td>
+                    <td>
+                        <!-- 제목을 클릭하면 게시글 상세 페이지로 이동 -->
+                        <a href="{{ route('boards.show', ['id' => $item->board_id]) }}">{{ $item->title }}</a>
+                    </td>
+                    <td>{{ $item->user_id }}</td>
+                    <td>{{ $item->reg_date }}</td>
+                    <td>{{ $item->upd_date }}</td>
+                    <td>{{ $item->views }}</td>
                 </tr>
+                @endforeach
             </tbody>
         </table>
 

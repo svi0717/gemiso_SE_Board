@@ -38,11 +38,12 @@
             margin-bottom: 10px; 
         }
         .card-title {
+            padding : 10px;
             font-size: 1.25rem; 
             margin-bottom: 5px; 
         }
         .card-subtitle {
-            margin: 0; 
+            padding : 10px;
         }
         .date-label {
             color: #6c757d;
@@ -58,6 +59,11 @@
         }
         .content {
             margin-bottom: 150px;
+        }
+        .card-title-container {
+            display: flex;
+            justify-content: space-between; /* 양쪽 끝에 배치 */
+            margin-bottom: 10px; /* 아래쪽 여백 */
         }
     </style>
 </head>
@@ -75,19 +81,26 @@
                         게시물 조회
                         <div class="date-view" id="current_date"></div>
                     </div>
-
+                    <div class="card-title-container">
+                        <div class="card-title">제목: {{ $post->title }}</div>
+                        <div class="card-subtitle text-muted">작성자: {{ $post->user_id }}</div>
+                    </div>
                     <div class="card-body content-layout">
                         <!-- 게시물 제목과 작성자 -->
                         <div class="title-author">
-                            <h5 class="card-title">게시물 제목</h5>
-                            <div class="card-subtitle text-muted">작성자: 작성자 이름</div>
+                            <!-- Blade 구문을 사용하여 데이터 표시 -->
                         </div>
                         <!-- 게시물 내용 -->
-                        <div class="content">여기에 게시물의 내용이 들어갑니다. 게시물의 내용은 본문을 나타내며, 여러 줄에 걸쳐 있을 수 있습니다.</div>
+                        <div class="content">{{ $post->content }}</div>
                     </div>
                     <div class="card-footer text-right">
-                        <a href="/editboard" class="btn btn-secondary">수정</a>
-                        <a href="/delete" class="btn btn-danger">삭제</a>
+                        <!-- 수정 및 삭제 버튼 추가 -->
+                        <a href="{{ route('boards.edit', ['id' => $post->board_id]) }}" class="btn btn-secondary">수정</a>
+                        <form action="{{ route('boards.delete', $post->board_id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('DELETE') <!-- DELETE 메서드를 사용하도록 지정 -->
+                            <button type="submit" class="btn btn-danger">삭제</button>
+                        </form>
                     </div>
                 </div>
             </div>
