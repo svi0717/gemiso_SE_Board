@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BoardController;
 
-
-
 Route::get('/', function () {
     return view('login');
 });
@@ -17,26 +15,26 @@ Route::get('/editboard', function () {
     return view('editboard');
 });
 
-Route::get('/deleteboard', function () {
-    return view('deleteboard');
-});
+// 게시판 목록을 보여주는 라우트
+Route::get('/boardlist', [BoardController::class, 'boardlist'])->name('boardlist');
 
-// Route::get('/boardList', function () {
-//     return view('boardList');
-// });
+// 게시판 등록 폼을 보여주는 라우트
+Route::get('/insert', [BoardController::class, 'showInsertForm'])->name('boards.create');
 
-Route::get('/boardList', [BoardController::class, 'boardList']);
+// 폼에서 전송된 데이터를 처리하여 데이터베이스에 저장하는 라우트
+Route::post('/insert', [BoardController::class, 'insertBoard'])->name('boards.insert');
+
+// 게시글 상세보기 라우트 추가
+Route::get('/board/{id}', [BoardController::class, 'show'])->name('boards.show');
+
+// 수정
+Route::get('/board/{id}/edit', [BoardController::class, 'edit'])->name('boards.edit');
+
+// 삭제
+Route::delete('/board/{id}/delete', [BoardController::class, 'deleteBoard'])->name('boards.delete');
 
 Route::get('/boardview', function () {
     return view('boardview');
-});
-
-Route::get('/insert', function () {
-    return view('insert');
-});
-
-Route::get('/', function () {
-    return view('login');
 });
 
 Route::get('/join', function () {
