@@ -9,6 +9,6 @@ class Board extends Model
 {
     use HasFactory; 
 
-    protected $table = "gemiso_SE.board";
+    protected $table = "gemiso_se.board";
 
 }
