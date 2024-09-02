@@ -27,11 +27,11 @@ Route::post('/insert', [BoardController::class, 'insertBoard'])->name('boards.in
 // 게시글 상세보기 라우트 추가
 Route::get('/board/{id}', [BoardController::class, 'show'])->name('boards.show');
 
-// 수정
-Route::get('/board/{id}/edit', [BoardController::class, 'edit'])->name('boards.edit');
+Route::put('/boards/{id}', [BoardController::class, 'update'])->name('boards.update');
 
-// 삭제
-Route::delete('/board/{id}/delete', [BoardController::class, 'deleteBoard'])->name('boards.delete');
+// 게시물 조회, 수정 화면, 삭제 라우트
+Route::get('/boards/{id}/edit', [BoardController::class, 'edit'])->name('boards.edit');
+Route::delete('/boards/{id}', [BoardController::class, 'deleteBoard'])->name('boards.delete');
 
 Route::get('/boardview', function () {
     return view('boardview');

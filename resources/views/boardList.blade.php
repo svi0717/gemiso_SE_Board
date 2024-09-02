@@ -67,7 +67,11 @@
             <tbody>
                 @foreach ($board as $item)
                 <tr>
+
+                <td>{{ ($board->currentPage() - 1) * $board->perPage() + $loop->iteration }}</td>
+
                     <td>{{ $item->board_id }}</td>
+
                     <td>
                         <!-- 제목을 클릭하면 게시글 상세 페이지로 이동 -->
                         <a href="{{ route('boards.show', ['id' => $item->board_id]) }}">{{ $item->title }}</a>
@@ -84,22 +88,10 @@
         <div class="text-right">
             <a href="/insert" class="btn btn-primary">등록</a>
         </div>
-        <nav>
-            <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
+        <nav class="fixed-bottom-pagination">
+        <ul class="pagination justify-content-center">
+            {{ $board->links('vendor.pagination.custom') }}
+        </ul>
         </nav>
     </div>
 @endsection
