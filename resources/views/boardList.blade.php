@@ -37,7 +37,7 @@
                 <div>게시판 목록</div>
             </strong>
             <div class="col-md-12">
-            <form class="form-inline" method="GET" action="{{ route('boardlist') }}">
+            <form class="form-inline" method="GET" action="{{ route('boardList') }}">
                 <div class="form-group mr-2">
                     <input type="date" class="form-control" id="startDate" name="start_date">
                 </div>
@@ -67,11 +67,7 @@
             <tbody>
                 @foreach ($board as $item)
                 <tr>
-
                 <td>{{ ($board->currentPage() - 1) * $board->perPage() + $loop->iteration }}</td>
-
-                    <td>{{ $item->board_id }}</td>
-
                     <td>
                         <!-- 제목을 클릭하면 게시글 상세 페이지로 이동 -->
                         <a href="{{ route('boards.show', ['id' => $item->board_id]) }}">{{ $item->title }}</a>

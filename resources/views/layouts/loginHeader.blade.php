@@ -40,7 +40,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <a class="navbar-brand" href="{{ auth()->check() ? route('board.list') : '/' }}">Gemiso SE</a>
+            <a class="navbar-brand" href="{{ auth()->check() ? route('boardList') : '/' }}">Gemiso SE</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ml-auto">
                     @auth

@@ -30,7 +30,7 @@ function addButtonsToPage() {
     const sidebtn = document.getElementById('sidebar-button');
     const boardbtn = document.getElementById('list-buttons');
     
-    const boardButton = createButton('게시판', '/boardlist');
+    const boardButton = createButton('게시판', '/boardList');
     const scheduleButton = createButton('일정관리', '/schedule');
     const listButton = createButton('목록','/');
     const editButton = createButton('수정','/editboard');
