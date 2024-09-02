@@ -43,11 +43,11 @@
                 @csrf
                 <div class="mb-3">
                     <label for="user_id" class="form-label">아이디</label>
-                    <input type="text" class="form-control" id="user_id" name="user_id" placeholder="아이디" autocomplete="off" required>
+                    <input type="text" class="form-control" id="user_id" name="user_id" autocomplete="off" required placeholder="아이디">
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호" autocomplete="off" required>
+                    <input type="password" class="form-control" id="password" name="password" autocomplete="off" required placeholder="비밀번호">
                 </div>
                 <div class="mb-3 form-check">
                     <div class="d-inline-block mr-5 ml-4">
@@ -77,6 +77,16 @@
           @endif
         </div>
     </div>
+    <!-- Error Alert -->
+@if (session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: '오류',
+        text: "{{ session('error') }}",
+    });
+</script>
+@endif
     @endsection
 </body>
 </html>

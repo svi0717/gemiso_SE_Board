@@ -53,9 +53,7 @@ class UserController extends Controller
         }
 
         // 인증 실패
-        return back()->withErrors([
-            'user_id' => '아이디 또는 비밀번호가 올바르지 않습니다.',
-        ]);
+        return redirect()->back()->with('error', '아이디 또는 비밀번호가 일치하지 않습니다.');
     }
 
     public function logout(Request $request)
