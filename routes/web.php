@@ -12,24 +12,30 @@ Route::get('/editboard', function () {
     return view('editboard');
 });
 
-Route::get('/deleteboard', function () {
-    return view('deleteboard');
-});
+// 게시판 목록을 보여주는 라우트
+Route::get('/boardlist', [BoardController::class, 'boardlist'])->name('boardlist');
 
-// Route::get('/boardList', function () {
-//     return view('boardList');
-// });
+// 게시판 등록 폼을 보여주는 라우트
+Route::get('/insert', [BoardController::class, 'showInsertForm'])->name('boards.create');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/boardList', [BoardController::class, 'index'])->name('boardList');
-});
+// 폼에서 전송된 데이터를 처리하여 데이터베이스에 저장하는 라우트
+Route::post('/insert', [BoardController::class, 'insertBoard'])->name('boards.insert');
+
+// 게시글 상세보기 라우트 추가
+Route::get('/board/{id}', [BoardController::class, 'show'])->name('boards.show');
+
+Route::put('/boards/{id}', [BoardController::class, 'update'])->name('boards.update');
+
+// 게시물 조회, 수정 화면, 삭제 라우트
+Route::get('/boards/{id}/edit', [BoardController::class, 'edit'])->name('boards.edit');
+Route::delete('/boards/{id}', [BoardController::class, 'deleteBoard'])->name('boards.delete');
 
 Route::get('/boardview', function () {
     return view('boardview');
 });
 
-Route::get('/insert', function () {
-    return view('insert');
+Route::get('/join', function () {
+    return view('join');
 });
 
 Route::get('/findId', function () {
@@ -84,4 +90,3 @@ Route::post('/password/update', [UserController::class, 'updatePassword'])->name
 
 // 비밀번호 찾기 완료 페이지
 Route::get('/findPasswordCompleted', [UserController::class, 'findPasswordCompleted'])->name('findPasswordCompleted');
-

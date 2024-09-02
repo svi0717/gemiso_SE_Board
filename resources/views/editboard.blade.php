@@ -8,14 +8,14 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <style>
         .centered-form {
-            max-width: 600px; /* Optional: Set a maximum width for the form */
-            margin: 0 auto; /* Center the form horizontally */
+            max-width: 600px; /* 폼의 최대 너비 설정 */
+            margin: 0 auto; /* 폼을 가로로 중앙에 배치 */
         }
         .table-header {
             background-color: #f8f9fa;
         }
         .table tbody tr:last-child {
-            border-bottom: 2px solid #dee2e6; /* Light gray border for the last row */
+            border-bottom: 2px solid #dee2e6; /* 마지막 행에 연한 회색 테두리 */
         }
     </style>
 </head>
@@ -29,23 +29,36 @@
         <div class="row mb-4">
             <div class="col-12 centered-form">
                 <h3 class="text-center">게시판 수정</h3>
-                <div class="mb-3">
-                    <label for="title" class="form-label">제목</label>
-                    <input type="text" class="form-control" id="title" placeholder="제목">
-                </div>
-                <div class="mb-3">
-                    <label for="Author" class="form-label">작성자</label>
-                    <input type="text" class="form-control" id="Author" placeholder="작성자">
-                </div>
-                <div class="mb-3">
-                    <label for="content" class="form-label">내용</label>
-                    <textarea class="form-control" id="content" rows="10"></textarea>
-                </div>
+                <!-- 수정 폼 시작 -->
+                <form action="{{ route('boards.update', ['id' => $post->board_id]) }}" method="POST">
+                    @csrf <!-- CSRF 보호 토큰 -->
+                    @method('PUT') <!-- PUT 메서드를 사용하여 요청 -->
+                    
+                    <!-- 제목 입력 필드 -->
+                    <div class="mb-3">
+                        <label for="title" class="form-label">제목</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ $post->title }}" placeholder="제목">
+                    </div>
+                    
+                    <!-- 작성자 입력 필드 -->
+                    <div class="mb-3">
+                        <label for="author" class="form-label">작성자</label>
+                        <input type="text" class="form-control" id="author" name="author" value="{{ $post->user_id }}" placeholder="작성자" readonly>
+                    </div>
+                    
+                    <!-- 내용 입력 필드 -->
+                    <div class="mb-3">
+                        <label for="content" class="form-label">내용</label>
+                        <textarea class="form-control" id="content" name="content" rows="10">{{ $post->content }}</textarea>
+                    </div>
+                    
+                    <!-- 수정 버튼 -->
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary">수정</button>
+                    </div>
+                </form>
+                <!-- 수정 폼 끝 -->
             </div>
-        </div>
-        
-        <div class="text-right">
-            <a href="/boardList" class="btn btn-primary">수정</a>
         </div>
     </div>
 @endsection
