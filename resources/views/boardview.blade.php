@@ -86,17 +86,13 @@
                         <div class="card-subtitle text-muted">작성자: {{ $post->user_id }}</div>
                     </div>
                     <div class="card-body content-layout">
-                        <!-- 게시물 제목과 작성자 -->
-                        <div class="title-author">
-                            <!-- Blade 구문을 사용하여 데이터 표시 -->
-                        </div>
                         <!-- 게시물 내용 -->
                         <div class="content">{{ $post->content }}</div>
                     </div>
                     <div class="card-footer text-right">
                         <!-- 수정 및 삭제 버튼 추가 -->
                         <a href="{{ route('boards.edit', ['id' => $post->board_id]) }}" class="btn btn-secondary">수정</a>
-                        <form action="{{ route('boards.delete', $post->board_id) }}" method="POST" style="display: inline;">
+                        <form action="{{ route('boards.delete', $post->board_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                             @csrf
                             @method('DELETE') <!-- DELETE 메서드를 사용하도록 지정 -->
                             <button type="submit" class="btn btn-danger">삭제</button>
@@ -109,8 +105,8 @@
     <script>
         date = new Date();
         year = date.getFullYear();
-        month = date.getMonth() + 1;
-        day = date.getDate();
+        month = ('0' + (date.getMonth() + 1)).slice(-2); // 월을 2자리로 표시
+        day = ('0' + date.getDate()).slice(-2); // 일을 2자리로 표시
         document.getElementById("current_date").innerHTML = year + "-" + month + "-" + day;
     </script>
 @endsection
