@@ -145,7 +145,7 @@ class BoardController extends Controller
 
             // 카테고리 검증
             if ($validated['category'] !== '게시판') {
-                return redirect()->back()->with('error', '잘못된 카테고리입니다.');
+                DB::table('gemiso_se.schedule') -> insert();
             }
 
             // 게시글 삽입
