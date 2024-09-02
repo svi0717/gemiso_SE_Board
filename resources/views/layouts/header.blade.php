@@ -51,6 +51,10 @@
                             </form>
                             <a class="nav-link text-white" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">로그아웃</a>
                         </li>
+                        @else
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ route('login.form') }}">로그인</a>
+                        </li>
                     @endauth
                 </ul>
             </div>
