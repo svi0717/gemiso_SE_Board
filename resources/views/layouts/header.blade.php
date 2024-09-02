@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Header and Sidebar Example</title>
-    
+    <title>헤더와 사이드바 예제</title>
+
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="{{ asset('js/buttons.js') }}" defer></script>
-    
+
     <style>
         .btn-custom {
             font-size: 20px; /* 버튼 글씨 크기 조정 */
@@ -18,7 +18,7 @@
         }
 
         .sidebar {
-            margin-top: 180px; 
+            margin-top: 180px;
         }
 
         .content {
@@ -38,12 +38,20 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <a class="navbar-brand" href="#">Gemiso SE</a>
+            <a class="navbar-brand" href="{{ auth()->check() ? '/boardList' : '/' }}">Gemiso SE</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#">홍길동</a>
-                    </li>
+                    @auth
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#">{{ Auth::user()->name }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                            <a class="nav-link text-white" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">로그아웃</a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
         </nav>
@@ -51,12 +59,11 @@
 
     <main class="container col-md-10 mt-4">
         <div class="row">
-            <!-- Sidebar -->
+            <!-- 사이드바 -->
             <div class="col-md-2 sidebar" id="sidebar-button"></div>
             <br>
-            
 
-            <!-- Content -->
+            <!-- 콘텐츠 -->
             <div class="col-md-8 content">
                 @yield('content')
             </div>
@@ -65,7 +72,7 @@
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-            addButtonsToPage();
-        });
+        addButtonsToPage();
+    });
 </script>
 </html>

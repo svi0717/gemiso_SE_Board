@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>아이디 찾기</title>
+    <title>비밀번호 재설정</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 </head>
@@ -27,38 +27,29 @@
 <body>
 @extends('layouts.loginHeader')
 
-@section('title', '아이디 찾기')
+@section('title', '비밀번호 재설정')
 
 @section('content')
 <div class="container ml-5">
     <div class="card p-4">
         <div class="text-center mb-4">
-            <h4>아이디 찾기</h4>
+            <h4>비밀번호 재설정</h4>
         </div>
-        <form action="{{ route('findId') }}" method="POST">
+        <form action="{{ route('updatePassword') }}" method="POST">
             @csrf
+            <input type="hidden" name="user_id" value="{{ $user_id }}">
             <div class="mb-3">
-                <label for="name" class="form-label">이름</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <label for="new_password" class="form-label">새 비밀번호</label>
+                <input type="password" class="form-control" id="new_password" name="new_password" required>
             </div>
             <div class="mb-3">
-                <label for="phone" class="form-label">전화번호</label>
-                <input type="text" class="form-control" id="phone" name="phone" required>
+                <label for="confirm_password" class="form-label">비밀번호 확인</label>
+                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">아이디 찾기</button>
+            <button type="submit" class="btn btn-primary btn-block">비밀번호 변경</button>
         </form>
     </div>
 </div>
-<!-- Error Alert -->
-@if (session('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: '오류',
-            text: "{{ session('error') }}",
-        });
-    </script>
-@endif
 @endsection
 </body>
 </html>
