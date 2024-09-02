@@ -15,16 +15,15 @@
     }
 
     .container {
-        height: 100vh; 
+        height: 100vh;
         display: flex;
-        align-items: center; 
+        align-items: center;
     }
 
     .card {
         width: 400px;
     }
-
-    </style>
+</style>
 <body>
 @extends('layouts.loginHeader')
 
@@ -36,23 +35,36 @@
         <div class="text-center mb-4">
             <h4>비밀번호 찾기</h4>
         </div>
-        <form>
+        <form action="{{ route('findPassword') }}" method="POST">
+            @csrf
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">아이디</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <label for="user_id" class="form-label">아이디</label>
+                <input type="text" class="form-control" id="user_id" name="user_id" required>
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">이름</label>
-                <input type="email" class="form-control" id="name">
+                <input type="text" class="form-control" id="name" name="name" required>
             </div>
             <div class="mb-3">
                 <label for="phone" class="form-label">전화번호</label>
-                <input type="email" class="form-control" id="phone">
+                <input type="text" class="form-control" id="phone" name="phone" required>
             </div>
             <button type="submit" class="btn btn-primary btn-block">비밀번호 찾기</button>
         </form>
     </div>
 </div>
+
+<!-- Error Alert -->
+@if (session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: '오류',
+            text: "{{ session('error') }}",
+        });
+    </script>
+@endif
+
 @endsection
 </body>
 </html>
