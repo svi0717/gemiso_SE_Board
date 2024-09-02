@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class BoardController extends Controller
 {
@@ -22,14 +23,12 @@ class BoardController extends Controller
                 $search = $request->input('search');
                 $query->where('gemiso_se.board.title', 'like', "%$search%");
             }
-
             $query->orderBy('gemiso_se.board.reg_date', 'desc');
 
             // 게시판 목록을 조회합니다.
-            $board = $query->paginate(10)->withQueryString();
+            $board = $query->paginate(10);
         
             // dd($request->has('start_date'));
-
 
             return view('boardList', ['board' => $board]);
         } catch (\Exception $e) {
@@ -41,7 +40,7 @@ class BoardController extends Controller
     {
         try {
             // 사용자 정보를 조회
-            $user_id = DB::table('gemiso_se.user')->select('gemiso_se.user.user_id.*');
+            $user_id = Auth::user()->user_id;
             $user = DB::table('gemiso_se.user')->where('user_id', $user_id)->first();
 
             if (!$user) {
@@ -126,6 +125,7 @@ class BoardController extends Controller
     public function insertBoard(Request $request)
     {
         try {
+            $user_id = Auth::user()->user_id;
             // 요청 데이터 검증
             $validated = $request->validate([
                 'category' => 'required|string|max:50',
@@ -142,7 +142,7 @@ class BoardController extends Controller
             // 게시글 삽입
             DB::table('gemiso_se.board')->insert([
                 'title' => $validated['title'],
-                'user_id' => $validated['user_id'],
+                'user_id' => $user_id,
                 'content' => $validated['content'],
                 'reg_date' => now()->toDateString(),
                 'upd_date' => now()->toDateString(),
