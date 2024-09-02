@@ -13,7 +13,7 @@ Route::get('/editboard', function () {
 });
 
 // 게시판 목록을 보여주는 라우트
-Route::get('/boardlist', [BoardController::class, 'boardlist'])->name('boardlist');
+Route::get('/boardList', [BoardController::class, 'boardlist'])->name('boardList');
 
 // 게시판 등록 폼을 보여주는 라우트
 Route::get('/insert', [BoardController::class, 'showInsertForm'])->name('boards.create');
@@ -32,10 +32,6 @@ Route::delete('/boards/{id}', [BoardController::class, 'deleteBoard'])->name('bo
 
 Route::get('/boardview', function () {
     return view('boardview');
-});
-
-Route::get('/join', function () {
-    return view('join');
 });
 
 Route::get('/findId', function () {

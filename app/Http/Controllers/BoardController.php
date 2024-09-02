@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 class BoardController extends Controller
 {
-    public function boardlist(Request $request)
+    public function boardList(Request $request)
     {
         try {   
             $query = DB::table('gemiso_se.board')
@@ -14,11 +14,9 @@ class BoardController extends Controller
                 ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name');
 
             // 날짜 필터링
-
             if ($request->has('start_date') > '' && $request->has('end_date')> '' && $request->input('start_date') && $request->input('end_date')) {
                 $query->whereBetween('gemiso_se.board.reg_date', [$request->input('start_date'), $request->input('end_date')]);
             }
-
             // 제목 검색
             if ($request->has('search') &&  $request->input('search')) {
                 $search = $request->input('search');
@@ -29,23 +27,7 @@ class BoardController extends Controller
 
             // 게시판 목록을 조회합니다.
             $board = $query->paginate(10)->withQueryString();
-
-            if ($request->has('start_date') > ' ' && $request->has('end_date') > ' ') {
-                $query->whereBetween('gemiso_se.board.reg_date', [$request->input('start_date'), $request->input('end_date')]);
-                // dd($request->has('start_date'));
-            }
-
-            // 제목 검색
-            if ($request->has('search')) {
-                $search = $request->input('search');
-                // dd($query);
-                $query->where('gemiso_se.board.title', 'like', "%".$search."%");
-            }
-
-            // DB::enableQueryLog();
-            
-            // 게시판 목록을 조회합니다.
-            $board = $query->get();
+        
             // dd($request->has('start_date'));
 
 
@@ -59,10 +41,11 @@ class BoardController extends Controller
     {
         try {
             // 사용자 정보를 조회
-            $user = DB::table('gemiso_se.user')->where('user_id', 1)->first();
+            $user_id = DB::table('gemiso_se.user')->select('gemiso_se.user.user_id.*');
+            $user = DB::table('gemiso_se.user')->where('user_id', $user_id)->first();
 
             if (!$user) {
-                return redirect()->route('boardlist')->with('error', '사용자 정보를 찾을 수 없습니다.');
+                return redirect()->route('boardList')->with('error', '사용자 정보를 찾을 수 없습니다.');
             }
 
             // 사용자 이름과 ID를 뷰에 전달
@@ -78,7 +61,7 @@ class BoardController extends Controller
             // 조회수를 증가시키기 전에 게시글이 존재하는지 확인
             $post = DB::table('gemiso_se.board')->where('board_id', $id)->first();
             if (!$post) {
-                return redirect()->route('boardlist')->with('error', '게시글을 찾을 수 없습니다.');
+                return redirect()->route('boardList')->with('error', '게시글을 찾을 수 없습니다.');
             }
 
             // 조회수 증가
@@ -121,7 +104,7 @@ class BoardController extends Controller
                 ]);
 
             // 플래시 메시지 설정 후 게시판 목록으로 리다이렉트
-            return redirect()->route('boardlist')->with('success', '수정이 완료되었습니다.');
+            return redirect()->route('boardList')->with('success', '수정이 완료되었습니다.');
 
         } catch (\Exception $e) {
             return back()->with('error', '수정 중 오류가 발생했습니다.');
@@ -134,7 +117,7 @@ class BoardController extends Controller
             // 게시글을 ID를 사용하여 삭제
             DB::table('gemiso_se.board')->where('board_id', $id)->delete();
             
-            return redirect()->route('boardlist')->with('success', '게시글이 성공적으로 삭제되었습니다.');
+            return redirect()->route('boardList')->with('success', '게시글이 성공적으로 삭제되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -167,7 +150,7 @@ class BoardController extends Controller
                 'delete_yn' => 'N',
             ]);
 
-            return redirect()->route('boardlist')->with('success', '게시글이 성공적으로 등록되었습니다.');
+            return redirect()->route('boardList')->with('success', '게시글이 성공적으로 등록되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
