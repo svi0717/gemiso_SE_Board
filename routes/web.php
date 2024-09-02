@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\BoardController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/schedule', function () {
-    return view('schedule');
-});
+Route::get('/schedule', [ScheduleController::class, 'scheduleList'])->name('schedule');
+Route::post('/schedule', [BoardController::class, 'insertBoard'])->name('schedule');
 
 Route::get('/editboard', function () {
     return view('editboard');

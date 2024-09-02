@@ -140,26 +140,38 @@ class BoardController extends Controller
                 'category' => 'required|string|max:50',
                 'title' => 'required|string|max:255',
                 'content' => 'required|string',
-                'user_id' => 'required|string'
+                'user_id' => 'required|string',
+                'start_date' => 'nullable|date_format:Y-m-d', 
+                 'end_date' => 'nullable|date_format:Y-m-d', 
             ]);
 
             // 카테고리 검증
             if ($validated['category'] !== '게시판') {
-                DB::table('gemiso_se.schedule') -> insert();
+                DB::table('gemiso_se.schedule') -> insert([
+                    'title' => $validated['title'],
+                    'user_id' => $user_id,
+                    'content' => $validated['content'],
+                    'reg_date' => now()->toDateString(),
+                    'start_date' => $validated['start_date'],
+                    'end_date' => $validated['end_date'],
+                    'delete_yn' => 'N',
+                ]);
+                return redirect()->route('schedule')->with('success', '일정이 성공적으로 등록되었습니다.');
             }
-
+            else{
+                DB::table('gemiso_se.board')->insert([
+                    'title' => $validated['title'],
+                    'user_id' => $user_id,
+                    'content' => $validated['content'],
+                    'reg_date' => now()->toDateString(),
+                    'upd_date' => now()->toDateString(),
+                    'views' => 0,
+                    'delete_yn' => 'N',
+                ]);
+    
+                return redirect()->route('boardList')->with('success', '게시글이 성공적으로 등록되었습니다.');
+            }
             // 게시글 삽입
-            DB::table('gemiso_se.board')->insert([
-                'title' => $validated['title'],
-                'user_id' => $user_id,
-                'content' => $validated['content'],
-                'reg_date' => now()->toDateString(),
-                'upd_date' => now()->toDateString(),
-                'views' => 0,
-                'delete_yn' => 'N',
-            ]);
-
-            return redirect()->route('boardList')->with('success', '게시글이 성공적으로 등록되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }

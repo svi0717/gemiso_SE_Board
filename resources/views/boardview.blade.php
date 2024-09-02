@@ -83,7 +83,7 @@
                     </div>
                     <div class="card-title-container">
                         <div class="card-title">제목: {{ $post->title }}</div>
-                        <div class="card-subtitle text-muted">작성자: {{ $post->user_id }}</div>
+                        <div class="card-subtitle text-muted">작성자: {{ Auth::user()->name  }}</div>
                     </div>
                     <div class="card-body content-layout">
                         <!-- 게시물 내용 -->

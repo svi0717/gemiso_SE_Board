@@ -37,7 +37,7 @@
                 },
                 select: function (arg) {
                     // 게시물 등록 페이지로 이동할 URL 생성
-                    var url = '/insert';
+                    var url = '/insert?category=일정관리&start=' + arg.startStr + '&end=' + arg.endStr;
 
                     // URL로 리디렉션
                     window.location.href = url;
@@ -82,69 +82,15 @@
                 },
                 dayMaxEvents: true, // allow "more" link when too many events
                 events: [
+                    foreach (schedule as item)
                     {
-                        title: 'All Day Event',
-                        start: '2022-07-01'
+                        title: {{$item->title}},
+                        start:  {{$item->start_date}},
+                        end:  {{$item->end_date}}
                     },
-                    {
-                        title: 'Long Event',
-                        start: '2022-07-07',
-                        end: '2022-07-10'
-                    },
-                    {
-                        groupId: 999,
-                        title: 'Repeating Event',
-                        start: '2022-07-09T16:00:00'
-                    },
-                    {
-                        groupId: 999,
-                        title: 'Repeating Event',
-                        start: '2022-07-16T16:00:00'
-                    },
-                    {
-                        title: 'Conference',
-                        start: '2022-07-11',
-                        end: '2022-07-13'
-                    },
-                    {
-                        title: 'Meeting',
-                        start: '2022-07-12T10:30:00',
-                        end: '2022-07-12T12:30:00'
-                    },
-                    {
-                        title: 'Lunch',
-                        start: '2022-07-12T12:00:00'
-                    },
-                    {
-                        title: 'Meeting',
-                        start: '2022-07-12T14:30:00'
-                    },
-                    {
-                        title: 'Happy Hour',
-                        start: '2024-08-12T17:30:00'
-                    },
-                    {
-                        title: 'Dinner',
-                        start: '2024-08-12'
-                    },
-                    {
-                        title: 'Birthday Party',
-                        url: 'http://google.com/',
-                        start: '2024-08-13'
-                    },
-                    {
-                        title: 'Click for Google',
-                        url: 'http://google.com/',
-                        start: '2022-07-28'
-                    },
-                    {
-                        title: 'Click for Google',
-                        url: '/boardview',
-                        start: '2024-08-29'
-                    }
+                    endforeach 
                 ]
             });
-
             calendar.render();
         });
     </script>
