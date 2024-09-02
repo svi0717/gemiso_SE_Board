@@ -82,13 +82,13 @@
                 },
                 dayMaxEvents: true, // allow "more" link when too many events
                 events: [
-                    foreach (schedule as item)
+                    @foreach ($schedule as $item)
                     {
-                        title: {{$item->title}},
-                        start:  {{$item->start_date}},
-                        end:  {{$item->end_date}}
+                        title: "{{ $item->title }}",
+                        start: "{{ $item->start_date }}",
+                        end: "{{ \Carbon\Carbon::parse($item->end_date)->addDay()->format('Y-m-d') }}"
                     },
-                    endforeach 
+                    @endforeach
                 ]
             });
             calendar.render();
