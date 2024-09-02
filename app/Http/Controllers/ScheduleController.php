@@ -16,7 +16,7 @@ class ScheduleController extends Controller
             //     ->select('gemiso_se.schedule.*', 'gemiso_se.user.name as user_name')
             //     ->where('gemiso_se.schedule.delete_yn', '=', 'N');
             $user_id = Auth::user()->user_id;
-            $schedule = DB::table('gemiso_se.schedule')->where('user_id', $user_id)->first();
+            $schedule = DB::table('gemiso_se.schedule')->where('user_id', $user_id)->get();
                 
             // 날짜 필터링
             // if ($request->has('start_date') > '' && $request->has('end_date')> '' && $request->input('start_date') && $request->input('end_date')) {
