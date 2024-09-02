@@ -25,7 +25,6 @@
         width: 400px;
         text-align: center;
     }
-
 </style>
 <body>
 @extends('layouts.loginHeader')
@@ -39,9 +38,15 @@
             <h4>아이디 찾기 완료</h4>
         </div>
         <div class="mb-3">
-            <p>회원님의 아이디는 <strong>example123</strong> 입니다.</p>
+            @if (session('user_id'))
+                <p>회원님의 아이디는 <strong>{{ session('user_id') }}</strong> 입니다.</p>
+            @endif
+
+            @if (session('error'))
+                <p class="text-danger">{{ session('error') }}</p>
+            @endif
         </div>
-        <a href="/login" class="btn btn-primary btn-block">로그인 하러 가기</a>
+        <a href="/" class="btn btn-primary btn-block">로그인 하러 가기</a>
         <a href="/findPassword" class="btn btn-secondary btn-block mt-2">비밀번호 찾기</a>
     </div>
 </div>
