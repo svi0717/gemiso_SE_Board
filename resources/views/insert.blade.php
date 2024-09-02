@@ -8,7 +8,7 @@
             <div class="col-12 centered-form">
                 <h3 class="text-center">게시판 등록</h3>
                 <!-- 작성자 이름 표시 -->
-                <p>작성자: {{ $userName }}</p>
+                <p>작성자: {{ Auth::user()->name }}</p>
                 
                 <form action="{{ route('boards.insert') }}" method="POST">
                     @csrf

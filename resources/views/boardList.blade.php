@@ -80,7 +80,6 @@
                 @endforeach
             </tbody>
         </table>
-
         <div class="text-right">
             <a href="/insert" class="btn btn-primary">등록</a>
         </div>
