@@ -8,39 +8,39 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <style>
         .centered-form {
-            max-width: 800px; 
-            margin: 0 auto; 
+            max-width: 800px;
+            margin: 0 auto;
         }
         .card-header {
             background-color: #f8f9fa;
             font-weight: bold;
             padding: 10px 15px;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
         }
         .card-body {
-            white-space: pre-wrap; 
+            white-space: pre-wrap;
             padding: 15px;
         }
         .content-layout {
-            text-align: left; 
+            text-align: left;
         }
         .title-section {
-            margin-bottom: 10px; 
+            margin-bottom: 10px;
         }
 
         .author-date {
             display: flex;
             align-items: center;
-            gap: 5px; 
-            margin-bottom: 10px; 
+            gap: 5px;
+            margin-bottom: 10px;
         }
         .card-title {
             padding : 10px;
-            font-size: 1.25rem; 
-            margin-bottom: 5px; 
+            font-size: 1.25rem;
+            margin-bottom: 5px;
         }
         .card-subtitle {
             padding : 10px;
@@ -54,7 +54,7 @@
         }
         .title-author {
             display: flex;
-            justify-content: space-between; 
+            justify-content: space-between;
             align-items: center;
         }
         .content {
@@ -91,12 +91,14 @@
                     </div>
                     <div class="card-footer text-right">
                         <!-- 수정 및 삭제 버튼 추가 -->
+                        @if ($userId == $post->user_id)
                         <a href="{{ route('boards.edit', ['id' => $post->board_id]) }}" class="btn btn-secondary">수정</a>
                         <form action="{{ route('boards.delete', $post->board_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                             @csrf
                             @method('DELETE') <!-- DELETE 메서드를 사용하도록 지정 -->
                             <button type="submit" class="btn btn-danger">삭제</button>
                         </form>
+                        @endif
                     </div>
                 </div>
             </div>

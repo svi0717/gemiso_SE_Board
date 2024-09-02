@@ -9,10 +9,11 @@ class BoardController extends Controller
 {
     public function boardList(Request $request)
     {
-        try {   
+        try {
             $query = DB::table('gemiso_se.board')
                 ->join('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
-                ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name');
+                ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name')
+                ->where('gemiso_se.board.delete_yn', '=', 'N');
 
             // 날짜 필터링
             if ($request->has('start_date') > '' && $request->has('end_date')> '' && $request->input('start_date') && $request->input('end_date')) {
@@ -27,7 +28,7 @@ class BoardController extends Controller
 
             // 게시판 목록을 조회합니다.
             $board = $query->paginate(10);
-        
+
             // dd($request->has('start_date'));
 
             return view('boardList', ['board' => $board]);
@@ -57,6 +58,9 @@ class BoardController extends Controller
     public function show($id)
     {
         try {
+
+            $userId = Auth::user()->user_id;
+
             // 조회수를 증가시키기 전에 게시글이 존재하는지 확인
             $post = DB::table('gemiso_se.board')->where('board_id', $id)->first();
             if (!$post) {
@@ -69,7 +73,7 @@ class BoardController extends Controller
             // 조회수 증가 후 게시글 조회
             $post = DB::table('gemiso_se.board')->where('board_id', $id)->first();
 
-            return view('boardview', ['post' => $post]);
+            return view('boardview', ['post' => $post, 'userId' => $userId]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -79,7 +83,7 @@ class BoardController extends Controller
     {
         // 수정할 게시글 데이터 가져오기
         $post = DB::table('gemiso_se.board')->where('board_id', $id)->first();
-        
+
         // 수정 페이지로 이동
         return view('editboard', ['post' => $post]);
     }
@@ -114,8 +118,13 @@ class BoardController extends Controller
     {
         try {
             // 게시글을 ID를 사용하여 삭제
-            DB::table('gemiso_se.board')->where('board_id', $id)->delete();
-            
+            DB::table('gemiso_se.board')
+            ->where('board_id', $id)
+            ->update([
+                'delete_yn' => 'Y',
+                'deleted_at' => now()
+            ]);
+
             return redirect()->route('boardList')->with('success', '게시글이 성공적으로 삭제되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
