@@ -67,7 +67,11 @@
             <tbody>
                 @foreach ($board as $item)
                 <tr>
+
                 <td>{{ ($board->currentPage() - 1) * $board->perPage() + $loop->iteration }}</td>
+
+                    <td>{{ $item->board_id }}</td>
+
                     <td>
                         <!-- 제목을 클릭하면 게시글 상세 페이지로 이동 -->
                         <a href="{{ route('boards.show', ['id' => $item->board_id]) }}">{{ $item->title }}</a>

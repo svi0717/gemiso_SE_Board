@@ -8,12 +8,13 @@ class BoardController extends Controller
 {
     public function boardlist(Request $request)
     {
-        try {
+        try {   
             $query = DB::table('gemiso_se.board')
                 ->join('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
                 ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name');
 
             // 날짜 필터링
+
             if ($request->has('start_date') > '' && $request->has('end_date')> '' && $request->input('start_date') && $request->input('end_date')) {
                 $query->whereBetween('gemiso_se.board.reg_date', [$request->input('start_date'), $request->input('end_date')]);
             }
@@ -28,6 +29,25 @@ class BoardController extends Controller
 
             // 게시판 목록을 조회합니다.
             $board = $query->paginate(10)->withQueryString();
+
+            if ($request->has('start_date') > ' ' && $request->has('end_date') > ' ') {
+                $query->whereBetween('gemiso_se.board.reg_date', [$request->input('start_date'), $request->input('end_date')]);
+                // dd($request->has('start_date'));
+            }
+
+            // 제목 검색
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                // dd($query);
+                $query->where('gemiso_se.board.title', 'like', "%".$search."%");
+            }
+
+            // DB::enableQueryLog();
+            
+            // 게시판 목록을 조회합니다.
+            $board = $query->get();
+            // dd($request->has('start_date'));
+
 
             return view('boardList', ['board' => $board]);
         } catch (\Exception $e) {
