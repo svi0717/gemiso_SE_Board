@@ -49,6 +49,7 @@
                     var url = '/schedule/' + scheduleId; // 상세 페이지 URL 생성
                     window.location.href = url; // 해당 URL로 리디렉션
                },
+
                 dayMaxEvents: true, // allow "more" link when too many events
                 events: [
                     @foreach ($schedule as $item)
