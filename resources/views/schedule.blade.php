@@ -30,7 +30,7 @@
                 navLinks: true, // can click day/week names to navigate views
                 editable: true,
                 dayCellContent: function(arg) {
-                    if (arg.view.type === 'dayGridMonth') { 
+                    if (arg.view.type === 'dayGridMonth') {
                         // Month view에서만 날짜에 숫자만 표시
                         arg.dayNumberText = arg.date.getDate();
                     }
@@ -42,48 +42,18 @@
                     // URL로 리디렉션
                     window.location.href = url;
                 },
-                // Delete event
                 eventClick: function (arg) {
-                    Swal.fire({
-                        text: "Are you sure you want to delete this event?",
-                        icon: "warning",
-                        showCancelButton: true,
-                        buttonsStyling: false,
-                        confirmButtonText: "Yes, delete it!",
-                        cancelButtonText: "No, return",
-                        customClass: {
-                            confirmButton: "btn btn-primary",
-                            cancelButton: "btn btn-active-light"
-                        }
-                    }).then(function (result) {
-                        if (result.value) {
-                            arg.event.remove();
-                            Swal.fire({
-                                text: "Event deleted successfully!",
-                                icon: "success",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-primary",
-                                }
-                            });
-                        } else if (result.dismiss === "cancel") {
-                            Swal.fire({
-                                text: "Event was not deleted!",
-                                icon: "error",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-primary",
-                                }
-                            });
-                        }
-                    });
-                },
+                    console.log("Event clicked:", arg);  // 이벤트 객체 로그
+
+                    var scheduleId = arg.event.id; // 이벤트의 ID를 가져옴
+                    var url = '/schedule/' + scheduleId; // 상세 페이지 URL 생성
+                    window.location.href = url; // 해당 URL로 리디렉션
+               },
                 dayMaxEvents: true, // allow "more" link when too many events
                 events: [
                     @foreach ($schedule as $item)
                     {
+                        id: "{{ $item->sch_id }}", // `id` 필드로 설정
                         title: "{{ $item->title }}",
                         start: "{{ $item->start_date }}",
                         end: "{{ \Carbon\Carbon::parse($item->end_date)->addDay()->format('Y-m-d') }}"
