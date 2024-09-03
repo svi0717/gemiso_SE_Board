@@ -43,8 +43,7 @@
                     window.location.href = url;
                 },
                 eventClick: function (arg) {
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                     // var eventId = arg.event.id;
 
                     // // 일정 조회 페이지로 이동할 URL 생성
