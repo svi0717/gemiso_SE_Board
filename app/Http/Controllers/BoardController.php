@@ -55,13 +55,12 @@ class BoardController extends Controller
         }
     }
 
-    public function show($id)
+    public function showBoard($id)
     {
         try {
-
             $userId = Auth::user()->user_id;
 
-            // 조회수를 증가시키기 전에 게시글이 존재하는지 확인
+            // 게시글 조회
             $post = DB::table('gemiso_se.board')->where('board_id', $id)->first();
             if (!$post) {
                 return redirect()->route('boardList')->with('error', '게시글을 찾을 수 없습니다.');
@@ -70,14 +69,16 @@ class BoardController extends Controller
             // 조회수 증가
             DB::table('gemiso_se.board')->where('board_id', $id)->increment('views');
 
-            // 조회수 증가 후 게시글 조회
+            // 게시글 다시 조회
             $post = DB::table('gemiso_se.board')->where('board_id', $id)->first();
 
-            return view('boardview', ['post' => $post, 'userId' => $userId]);
+            return view('boardview', ['post' => $post, 'userId' => $userId, 'type' => 'board']);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+
+
 
     public function edit($id)
     {
@@ -85,7 +86,7 @@ class BoardController extends Controller
         $post = DB::table('gemiso_se.board')->where('board_id', $id)->first();
 
         // 수정 페이지로 이동
-        return view('editboard', ['post' => $post]);
+        return view('editboard', ['post' => $post, 'type' => 'board']);
     }
 
     public function update(Request $request, $id)
@@ -141,8 +142,8 @@ class BoardController extends Controller
                 'title' => 'required|string|max:255',
                 'content' => 'required|string',
                 'user_id' => 'required|string',
-                'start_date' => 'nullable|date_format:Y-m-d', 
-                 'end_date' => 'nullable|date_format:Y-m-d', 
+                'start_date' => 'nullable|date_format:Y-m-d',
+                 'end_date' => 'nullable|date_format:Y-m-d',
             ]);
 
             // 카테고리 검증
@@ -168,7 +169,7 @@ class BoardController extends Controller
                     'views' => 0,
                     'delete_yn' => 'N',
                 ]);
-    
+
                 return redirect()->route('boardList')->with('success', '게시글이 성공적으로 등록되었습니다.');
             }
             // 게시글 삽입
