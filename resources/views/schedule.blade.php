@@ -44,41 +44,13 @@
                 },
                 // Delete event
                 eventClick: function (arg) {
-                    Swal.fire({
-                        text: "Are you sure you want to delete this event?",
-                        icon: "warning",
-                        showCancelButton: true,
-                        buttonsStyling: false,
-                        confirmButtonText: "Yes, delete it!",
-                        cancelButtonText: "No, return",
-                        customClass: {
-                            confirmButton: "btn btn-primary",
-                            cancelButton: "btn btn-active-light"
-                        }
-                    }).then(function (result) {
-                        if (result.value) {
-                            arg.event.remove();
-                            Swal.fire({
-                                text: "Event deleted successfully!",
-                                icon: "success",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-primary",
-                                }
-                            });
-                        } else if (result.dismiss === "cancel") {
-                            Swal.fire({
-                                text: "Event was not deleted!",
-                                icon: "error",
-                                buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-primary",
-                                }
-                            });
-                        }
-                    });
+                    // var eventId = arg.event.id;
+
+                    // // 일정 조회 페이지로 이동할 URL 생성
+                    // var url = '/view-schedule/' + eventId;
+                    
+                    // // URL로 리디렉션
+                    // window.location.href = url;
                 },
                 dayMaxEvents: true, // allow "more" link when too many events
                 events: [

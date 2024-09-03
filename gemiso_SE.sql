@@ -13,17 +13,20 @@ CREATE TABLE gemiso_se.board (
 );
 
 CREATE TABLE gemiso_se.schedule (
-	sch_id SERIAL,
-	board_id numeric NULL,
-	reg_date date NULL,
-	start_date date NULL,
-	end_date date NULL,
-	delete_yn bpchar(1) NULL,
-	deleted_at date NULL,
-	user_id  varchar(30) NOT NULL,
-	CONSTRAINT schedule_pk PRIMARY KEY (sch_id),
-	CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES gemiso_se."user"(user_id)
+   sch_id serial4 NOT NULL,
+   board_id numeric NULL,
+   title varchar(30) NOT NULL,
+   "content" varchar NOT NULL,
+   reg_date date NULL,
+   start_date date NULL,
+   end_date date NULL,
+   delete_yn bpchar(1) NULL,
+   deleted_at date NULL,
+   user_id varchar(30) NOT NULL,
+   CONSTRAINT schedule_pk PRIMARY KEY (sch_id),
+   CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES gemiso_se."user"(user_id)
 );
+
 
 CREATE TABLE gemiso_se.user (
 	id SERIAL,
