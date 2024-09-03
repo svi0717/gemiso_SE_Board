@@ -43,32 +43,12 @@
                     window.location.href = url;
                 },
                 eventClick: function (arg) {
-
-                    // var eventId = arg.event.id;
-
-                    // // 일정 조회 페이지로 이동할 URL 생성
-                    // var url = '/view-schedule/' + eventId;
-                    
-                    // // URL로 리디렉션
-                    // window.location.href = url;
-                },
-=======
                     console.log("Event clicked:", arg);  // 이벤트 객체 로그
 
                     var scheduleId = arg.event.id; // 이벤트의 ID를 가져옴
                     var url = '/schedule/' + scheduleId; // 상세 페이지 URL 생성
                     window.location.href = url; // 해당 URL로 리디렉션
                },
->>>>>>> 28d3d79f8fae0b7954b5fecbfa62f4c1a46ee5e0
-=======
-                    console.log("Event clicked:", arg);  // 이벤트 객체 로그
-
-                    var scheduleId = arg.event.id; // 이벤트의 ID를 가져옴
-                    var url = '/schedule/' + scheduleId; // 상세 페이지 URL 생성
-                    window.location.href = url; // 해당 URL로 리디렉션
-               },
-
->>>>>>> 8479c7cc353b84e904d185b898ff5ef5b0454ee8
                 dayMaxEvents: true, // allow "more" link when too many events
                 events: [
                     @foreach ($schedule as $item)
