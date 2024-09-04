@@ -14,6 +14,7 @@
 
                 <form action="{{ route('sch.insert') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="previous_url" value="{{ request()->get('previous_url', url('/schedule')) }}">
                     <!-- 날짜 선택 필드 추가 -->
                     <div class="mb-3" id="dateFields">
                         <label for="start_date" class="form-label">시작 날짜</label>
