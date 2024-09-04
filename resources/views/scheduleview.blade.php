@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="card-footer text-right">
-                        <a href="/schedule" class="btn btn-primary">목록</a>
+                        <a href="{{ request()->get('previous_url', '/schedule') }}" class="btn btn-primary">목록</a>
                         <!-- 수정 및 삭제 버튼 추가 -->
                         @if ($userId == $post->user_id)
                                 <a href="{{ route('schedules.edit', $post->sch_id) }}" class="btn btn-secondary">수정</a>

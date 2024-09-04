@@ -26,7 +26,7 @@ class ScheduleController extends Controller
                 $query->whereDate('start_date', '<=', $request->input('start_date'));
                 $query->whereDate('end_date', '>=', $request->input('end_date'));
             }
-          
+
 
             // 제목 검색
             if ($request->has('search') && $request->input('search')) {
@@ -35,16 +35,16 @@ class ScheduleController extends Controller
             }
 
             $query->orderBy('gemiso_se.schedule.reg_date', 'desc');
-            
-            // DB::enableQueryLog();  
+
+            // DB::enableQueryLog();
             $schedule = $query->paginate(10);
             // dd($board);
             // 목록을 조회합니다.
 
             // // 쿼리 로그 활성화
-            // dd(DB::getQueryLog()); 
+            // dd(DB::getQueryLog());
 
-            return view('scheduleList', ['schedule' => $schedule]);
+            return view('schedule', ['schedule' => $schedule]);
         } catch (\Exception $e) {
             // 예외 발생 시 JSON 형식으로 에러 메시지 반환
             return response()->json(['error' => $e->getMessage()]);
@@ -64,9 +64,10 @@ class ScheduleController extends Controller
     public function scheduleLists(Request $request)
     {
         try {
+            // 입력 받은 date 값을 처리하고 형식 확인
             $date = $request->input('date');
-
             $date = $this->formatDate($date);
+
             if (!$date) {
                 // 날짜 형식이 잘못된 경우 처리
                 throw new \Exception("Invalid date format.");
@@ -79,35 +80,52 @@ class ScheduleController extends Controller
                     'gemiso_se.schedule.*',
                     'gemiso_se.user.name as user_name'
                 )
-                ->whereDate('start_date', '<=', $date)
-                ->whereDate('end_date', '>=', $date)
-                ->where('gemiso_se.schedule.delete_yn', '=', 'N');
+                ->where('gemiso_se.schedule.delete_yn', '=', 'N')
+                ->where('start_date', '<=', $date)
+                ->where('end_date', '>=', $date);
 
-            // 날짜 필터링
+            // 사용자가 입력한 시작일자와 종료일자를 기준으로 일정 필터링
             if ($request->has('start_date') && $request->has('end_date') && $request->input('start_date') && $request->input('end_date')) {
-                $query->whereBetween('gemiso_se.schedule.start_date', [$request->input('start_date'), $request->input('end_date')]);
+                $startDate = $request->input('start_date');
+                $endDate = $request->input('end_date');
+
+                // 일정의 시작일자 또는 종료일자가 주어진 기간 내에 포함된 일정 검색
+                $query->where(function($query) use ($startDate, $endDate) {
+                    $query->whereBetween('gemiso_se.schedule.start_date', [$startDate, $endDate])
+                          ->orWhereBetween('gemiso_se.schedule.end_date', [$startDate, $endDate])
+                          ->orWhere(function($query) use ($startDate, $endDate) {
+                              $query->where('gemiso_se.schedule.start_date', '<=', $startDate)
+                                    ->where('gemiso_se.schedule.end_date', '>=', $endDate);
+                    });
+                });
             }
 
-            // 제목 검색
+
+            // 제목 검색 기능 추가
             if ($request->has('search') && $request->input('search')) {
                 $search = $request->input('search');
                 $query->where('gemiso_se.schedule.title', 'like', "%$search%");
             }
 
-            // 정렬
+            // 일정 등록 날짜로 정렬
             $query->orderBy('gemiso_se.schedule.reg_date', 'desc');
-            
-              
-            // 페이지네이션
+
+            // DB::enableQueryLog();
+
+            // 페이지네이션 처리
             $schedule = $query->paginate(10);
 
-            // dd(DB::getQueryLog()); 
+            // dd(DB::getQueryLog());
+
+
             // 뷰 반환
             return view('scheduleList', ['schedule' => $schedule]);
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
-}
+    }
+
     public function showSchedule($sch_id)
     {
         try {
@@ -145,6 +163,7 @@ class ScheduleController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
+
     }
 
     public function insertSchedule(Request $request)
@@ -169,7 +188,9 @@ class ScheduleController extends Controller
                 'delete_yn' => 'N',
             ]);
 
-              return redirect()->route('schedule')->with('success', '일정이 성공적으로 등록되었습니다.');
+            $previousUrl = $request->input('previous_url', route('scheduleList'));
+
+            return redirect()->to($previousUrl)->with('success', '일정이 성공적으로 등록되었습니다.');
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);

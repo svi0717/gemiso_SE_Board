@@ -69,7 +69,7 @@
                 <td>{{ ($schedule->currentPage() - 1) * $schedule->perPage() + $loop->iteration }}</td>
                     <td>
                         <!-- 제목을 클릭하면 게시글 상세 페이지로 이동 -->
-                        <a >{{ $item->title }}</a>
+                        <a href="{{ route('schedules.show', $item->sch_id) }}?previous_url={{ urlencode(url()->full()) }}">{{$item->title}}</a>
                     </td>
                     <td>{{ $item->user_name }}</td>
                     <td>{{ \Carbon\Carbon::parse($item->reg_date)->format('Y-m-d') }}</td>
@@ -80,7 +80,8 @@
             </tbody>
         </table>
         <div class="text-right">
-            <a href="/insertsch" class="btn btn-primary">등록</a>
+            {{-- <a href="/insertsch" class="btn btn-primary">등록</a> --}}
+            <a href="/insertsch?previous_url={{ urlencode(url()->full()) }}" class="btn btn-primary">등록</a>
         </div>
         <nav class="fixed-bottom-pagination">
         <ul class="pagination justify-content-center">
