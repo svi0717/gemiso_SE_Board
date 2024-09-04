@@ -11,16 +11,16 @@
 
                 <!-- 작성자 이름 표시 -->
                 <p>작성자: {{ Auth::user()->name }}</p>
-                
+
                 <form action="{{ route('sch.insert') }}" method="POST">
                     @csrf
                     <!-- 날짜 선택 필드 추가 -->
-                    <div class="mb-3" id="dateFields"> <!-- 처음에는 숨겨진 상태 -->
+                    <div class="mb-3" id="dateFields">
                         <label for="start_date" class="form-label">시작 날짜</label>
-                        <input type="date" class="form-control" id="start_date" name="start_date">
+                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ request()->get('start_date') }}">
 
                         <label for="end_date" class="form-label mt-2">종료 날짜</label>
-                        <input type="date" class="form-control" id="end_date" name="end_date">
+                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ request()->get('end_date') }}">
                     </div>
 
                     <div class="mb-3">
@@ -40,4 +40,29 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 오늘 날짜를 기준으로 어제 날짜는 선택하지 못하도록 설정
+            const today = new Date();
+            const minDate = today.toISOString().split('T')[0];
+
+            // 날짜 입력 필드에 최소 날짜 설정
+            document.getElementById('start_date').setAttribute('min', minDate);
+            document.getElementById('end_date').setAttribute('min', minDate);
+
+            // 페이지 로드 후 종료 날짜 조정
+            const endDateInput = document.getElementById('end_date');
+            const endDateValue = endDateInput.value;
+
+            if (endDateValue) {
+                const endDate = new Date(endDateValue);
+                endDate.setDate(endDate.getDate() - 1);
+                const eDate = endDate.toISOString().split('T')[0];
+                endDateInput.value = eDate;
+            }
+        });
+    </script>
+
+
 @endsection

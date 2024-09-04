@@ -35,19 +35,20 @@ Route::get('/board/{id}', [BoardController::class, 'showBoard'])->name('boards.s
 // 스케줄 조회 라우트
 Route::get('/schedule/{sch_id}', [ScheduleController::class, 'showSchedule'])->name('schedules.show');
 
-// 게시글 수정 라우트
-Route::put('/boards/{id}', [BoardController::class, 'update'])->name('boards.update');
-
 // 게시물 조회, 수정 화면, 삭제 라우트
 Route::get('/boards/{id}/edit', [BoardController::class, 'edit'])->name('boards.edit');
+
+// 게시글 수정 라우트
+Route::put('/boards/{id}', [BoardController::class, 'update'])->name('boards.update');
 
 Route::delete('/boards/{id}', [BoardController::class, 'deleteBoard'])->name('boards.delete');
 
 // 스케줄 수정 라우트
 Route::get('/schedule/{sch_id}/editschedule', [ScheduleController::class, 'editSchedule'])->name('schedules.edit');
 
-Route::put('/schedule/{sch_id}', [ScheduleController::class, 'updateSchedule'])->name('boards.update');
+Route::put('/schedule/{sch_id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
 
+// 스케줄 삭제 라우트
 Route::delete('/schedule/{sch_id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
 
 Route::get('/boardview', function () {
