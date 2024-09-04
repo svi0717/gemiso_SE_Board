@@ -6,16 +6,27 @@
     <div class="container mt-5">
         <div class="row mb-4">
             <div class="col-12 centered-form">
-                <!-- 동적으로 변경될 제목 -->
-                <h3 class="text-center" id="formTitle">일정 등록</h3> <!-- 처음에는 '게시판 등록' -->
+                <h3 class="text-center" id="formTitle">일정 등록</h3>
 
-                <!-- 작성자 이름 표시 -->
                 <p>작성자: {{ Auth::user()->name }}</p>
 
                 <form action="{{ route('sch.insert') }}" method="POST">
                     @csrf
+                    <label for="category" class="form-label">게시판 선택</label>
+                    <select class="form-control" id="category" name="board_id">
+                        <option value="" selected>게시판 선택 (선택하지 않으면 일정만 등록됩니다)</option>
+                        @if($boards->isNotEmpty())
+                            @foreach ($boards as $board)
+                                <option value="{{ $board->board_id }}">{{ $board->title }}</option>
+                            @endforeach
+                        @else
+                            <option value="">게시판이 없습니다</option>
+                        @endif
+                    </select>
+                    <label for="board" class="form-label mt-3" id="boardLabel" style="display:none;">게시판 제목</label>
+
                     <input type="hidden" name="previous_url" value="{{ request()->get('previous_url', url('/schedule')) }}">
-                    <!-- 날짜 선택 필드 추가 -->
+
                     <div class="mb-3" id="dateFields">
                         <label for="start_date" class="form-label">시작 날짜</label>
                         <input type="date" class="form-control" id="start_date" name="start_date" value="{{ request()->get('start_date') }}">
@@ -32,7 +43,6 @@
                         <label for="content" class="form-label">내용</label>
                         <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
                     </div>
-                    <!-- 사용자 ID를 hidden input으로 전달 -->
                     <input type="hidden" name="user_id" value="{{ $userId }}">
                     <div class="text-right">
                         <button type="submit" class="btn btn-primary">등록</button>
@@ -62,8 +72,32 @@
                 const eDate = endDate.toISOString().split('T')[0];
                 endDateInput.value = eDate;
             }
+
+            // 카테고리 선택에 따라 게시판 드롭다운 표시
+            const categorySelect = document.getElementById('category');
+            const boardSelect = document.getElementById('board');
+            const boardLabel = document.getElementById('boardLabel');
+
+            // 초기 상태 설정
+            if (categorySelect.value === '제목') {
+                boardSelect.style.display = 'block';
+                boardLabel.style.display = 'block';
+            } else {
+                boardSelect.style.display = 'none';
+                boardLabel.style.display = 'none';
+            }
+
+            // 카테고리 변경 이벤트 리스너 추가
+            categorySelect.addEventListener('change', function() {
+                if (this.value === '제목') {
+                    boardSelect.style.display = 'block';
+                    boardLabel.style.display = 'block';
+                } else {
+                    boardSelect.style.display = 'none';
+                    boardLabel.style.display = 'none';
+                }
+            });
         });
     </script>
-
 
 @endsection

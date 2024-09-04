@@ -76,9 +76,11 @@ class ScheduleController extends Controller
             // 기본 쿼리 설정
             $query = DB::table('gemiso_se.schedule')
                 ->leftJoin('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
+                ->leftJoin('gemiso_se.board', 'gemiso_se.schedule.board_id', '=', 'gemiso_se.board.board_id') // 게시판과 조인
                 ->select(
                     'gemiso_se.schedule.*',
-                    'gemiso_se.user.name as user_name'
+                    'gemiso_se.user.name as user_name',
+                    'gemiso_se.board.title as board_title' // 게시판 제목
                 )
                 ->where('gemiso_se.schedule.delete_yn', '=', 'N')
                 ->where('start_date', '<=', $date)
@@ -89,7 +91,6 @@ class ScheduleController extends Controller
                 $startDate = $request->input('start_date');
                 $endDate = $request->input('end_date');
 
-                // 일정의 시작일자 또는 종료일자가 주어진 기간 내에 포함된 일정 검색
                 $query->where(function($query) use ($startDate, $endDate) {
                     $query->whereBetween('gemiso_se.schedule.start_date', [$startDate, $endDate])
                           ->orWhereBetween('gemiso_se.schedule.end_date', [$startDate, $endDate])
@@ -100,23 +101,23 @@ class ScheduleController extends Controller
                 });
             }
 
-
             // 제목 검색 기능 추가
             if ($request->has('search') && $request->input('search')) {
                 $search = $request->input('search');
                 $query->where('gemiso_se.schedule.title', 'like', "%$search%");
             }
 
+            // 게시판 ID 필터링 추가
+            if ($request->has('board_id') && $request->input('board_id')) {
+                $boardId = $request->input('board_id');
+                $query->where('gemiso_se.schedule.board_id', $boardId);
+            }
+
             // 일정 등록 날짜로 정렬
             $query->orderBy('gemiso_se.schedule.reg_date', 'desc');
 
-            // DB::enableQueryLog();
-
             // 페이지네이션 처리
             $schedule = $query->paginate(10);
-
-            // dd(DB::getQueryLog());
-
 
             // 뷰 반환
             return view('scheduleList', ['schedule' => $schedule]);
@@ -125,6 +126,8 @@ class ScheduleController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+
+
 
     public function showSchedule($sch_id)
     {
@@ -158,26 +161,40 @@ class ScheduleController extends Controller
                 return redirect()->route('schedule')->with('error', '사용자 정보를 찾을 수 없습니다.');
             }
 
+            // 게시판 제목 가져오기
+            $boards = DB::table('gemiso_se.board')->select('board_id', 'title')->get();
+
             // 사용자 이름과 ID를 뷰에 전달
-            return view('insertsch', ['userName' => $user->name, 'userId' => $user->user_id]);
+            return view('insertsch', [
+                'userName' => $user->name,
+                'userId' => $user->user_id,
+                'boards' => $boards
+            ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
-
     }
+
 
     public function insertSchedule(Request $request)
     {
         try {
             $user_id = Auth::user()->user_id;
+
+            // 입력값 검증
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
                 'content' => 'required|string',
                 'user_id' => 'required|string',
                 'start_date' => 'nullable|date_format:Y-m-d',
                 'end_date' => 'nullable|date_format:Y-m-d',
+                'board_id' => 'nullable|integer'
             ]);
 
+            // board_id가 존재하지 않으면 null로 설정
+            $board_id = $validated['board_id'] ?? null;
+
+            // 일정 등록
             DB::table('gemiso_se.schedule')->insert([
                 'title' => $validated['title'],
                 'user_id' => $user_id,
@@ -185,6 +202,7 @@ class ScheduleController extends Controller
                 'reg_date' => now()->format('Y-m-d H:i:s'),
                 'start_date' => $validated['start_date'],
                 'end_date' => $validated['end_date'],
+                'board_id' => $board_id,
                 'delete_yn' => 'N',
             ]);
 
@@ -196,6 +214,8 @@ class ScheduleController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+
+
     public function deleteSchedule($sch_id)
     {
         try {
