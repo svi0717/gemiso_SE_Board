@@ -13,16 +13,15 @@
         background-color: #f8f9fa;
     }
     .table tbody tr:last-child {
-        border-bottom: 2px solid #dee2e6; 
+        border-bottom: 2px solid #dee2e6;
     }
 
     table a {
         color: black !important;
     }
-
     .table {
-        table-layout: auto; 
-        text-align: center; 
+        table-layout: auto;
+        text-align: center;
     }
 </style>
 <body>
@@ -34,7 +33,7 @@
     <div class="container mt-5">
         <div class="row mb-4">
             <strong>
-                <div>게시판 목록</div>
+                <div>목록</div>
             </strong>
             <div class="col-md-12">
             <form class="form-inline" method="GET" action="{{ route('boardList') }}">
@@ -73,7 +72,7 @@
                         <a href="{{ route('boards.show', ['id' => $item->board_id]) }}">{{ $item->title }}</a>
                     </td>
                     <td>{{ $item->user_name }}</td>
-                    <td>{{ $item->reg_date }}</td>
+                    <td>{{ \Carbon\Carbon::parse($item->reg_date)->format('Y-m-d') }}</td>
                     <td>{{ $item->upd_date }}</td>
                     <td>{{ $item->views }}</td>
                 </tr>
@@ -81,7 +80,7 @@
             </tbody>
         </table>
         <div class="text-right">
-            <a href="/insert" class="btn btn-primary">등록</a>
+            <a href="/insertboard" class="btn btn-primary">등록</a>
         </div>
         <nav class="fixed-bottom-pagination">
         <ul class="pagination justify-content-center">

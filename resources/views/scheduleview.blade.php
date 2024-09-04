@@ -55,8 +55,8 @@
             <div class="col-12 centered-form">
                 <div class="card">
                     <div class="card-header">
-                        게시물 조회
-                        <div class="date-view" id="current_date"></div>
+                        일정 조회
+                        <div class="date-view"> {{ $post->start_date === $post->end_date ? $post->start_date : $post->start_date . ' ~ ' . $post->end_date }}</div>
                     </div>
                     <div class="card-title-container">
                         <div class="card-title">제목: {{ $post->title }}</div>
@@ -73,35 +73,18 @@
                     <div class="card-footer text-right">
                         <!-- 수정 및 삭제 버튼 추가 -->
                         @if ($userId == $post->user_id)
-                            @if ($type == 'board')
-                                <a href="{{ route('boards.edit', ['id' => $post->board_id]) }}" class="btn btn-secondary">수정</a>
-                                <form action="{{ route('boards.delete', $post->board_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">삭제</button>
-                                </form>
-                            @else
                                 {{-- <a href="{{ route('schedules.edit', ['id' => $post->sch_id]) }}" class="btn btn-secondary">수정</a> --}}
                                 {{-- <form action="{{ route('schedules.delete', $post->sch_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">삭제</button>
                                 </form> --}}
-                            @endif
                         @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = ('0' + (date.getMonth() + 1)).slice(-2); // 월을 2자리로 표시
-        const day = ('0' + date.getDate()).slice(-2); // 일을 2자리로 표시
-        document.getElementById("current_date").innerHTML = year + "-" + month + "-" + day;
-    </script>
 @endsection
 </body>
 </html>

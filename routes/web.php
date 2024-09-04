@@ -16,10 +16,14 @@ Route::get('/editboard', function () {
 Route::get('/boardList', [BoardController::class, 'boardlist'])->name('boardList');
 
 // 게시판 등록 폼을 보여주는 라우트
-Route::get('/insert', [BoardController::class, 'showInsertForm'])->name('boards.create');
+Route::get('/insertboard', [BoardController::class, 'showInsertForm'])->name('boards.create');
+
+Route::get('/insertsch', [ScheduleController::class, 'showInsertForm'])->name('sch.create');
 
 // 폼에서 전송된 데이터를 처리하여 데이터베이스에 저장하는 라우트
-Route::post('/insert', [BoardController::class, 'insertBoard'])->name('boards.insert');
+Route::post('/insertboard', [BoardController::class, 'insertBoard'])->name('boards.insert');
+
+Route::post('/insertsch', [ScheduleController::class, 'insertSchedule'])->name('sch.insert');
 
 // 게시글 조회 라우트
 Route::get('/board/{id}', [BoardController::class, 'showBoard'])->name('boards.show');
@@ -32,11 +36,15 @@ Route::put('/boards/{id}', [BoardController::class, 'update'])->name('boards.upd
 
 // 게시물 조회, 수정 화면, 삭제 라우트
 Route::get('/boards/{id}/edit', [BoardController::class, 'edit'])->name('boards.edit');
+
 Route::delete('/boards/{id}', [BoardController::class, 'deleteBoard'])->name('boards.delete');
 
 // 스케줄 수정 라우트
 Route::get('/schedule/{sch_id}/editschedule', [ScheduleController::class, 'editSchedule'])->name('schedules.edit');
+
 Route::put('/schedule/{sch_id}', [ScheduleController::class, 'updateSchedule'])->name('boards.update');
+
+Route::delete('/schedule/{sch_id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
 
 Route::get('/boardview', function () {
     return view('boardview');
