@@ -11,13 +11,10 @@ class BoardController extends Controller
     {
         try {
             $query = DB::table('gemiso_se.board')
-            ->leftJoin('gemiso_se.schedule', 'gemiso_se.board.board_id', '=', 'gemiso_se.schedule.board_id')
             ->leftjoin('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
             ->select(
                 'gemiso_se.board.*',
-                // 'gemiso_se.schedule.*',
                 'gemiso_se.user.name as user_name',
-                DB::raw('CASE WHEN gemiso_se.schedule.board_id IS NOT NULL THEN \'Y\' ELSE \'N\' END AS sch_yn')
             )
             ->where('gemiso_se.board.delete_yn', '=', 'N');
 
@@ -34,17 +31,17 @@ class BoardController extends Controller
 
             $query->orderBy('gemiso_se.board.reg_date', 'desc');
 
-            
+
             // $user_id = Auth::user()->user_id;
             // $user = DB::table('gemiso_se.user')->where('user_id', $user_id)->first();
-            
-            // DB::enableQueryLog();  
+
+            // DB::enableQueryLog();
             $board = $query->paginate(10);
             // dd($board);
             // 게시판 목록을 조회합니다.
 
             // // 쿼리 로그 활성화
-            // dd(DB::getQueryLog()); 
+            // dd(DB::getQueryLog());
 
             return view('boardList', ['board' => $board]);
         } catch (\Exception $e) {
@@ -100,7 +97,10 @@ class BoardController extends Controller
     public function edit($id)
     {
         // 수정할 게시글 데이터 가져오기
-        $post = DB::table('gemiso_se.board')->where('board_id', $id)->first();
+        $post = DB::table('gemiso_se.board')
+        ->leftJoin('gemiso_se.user', 'gemiso_se.user.user_id', '=', 'gemiso_se.board.user_id')
+        ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name')
+        ->where('gemiso_se.board.board_id', $id)->first();
 
         // 수정 페이지로 이동
         return view('editboard', ['post' => $post, 'type' => 'board']);
@@ -171,7 +171,7 @@ class BoardController extends Controller
                 'delete_yn' => 'N',
             ]);
 
-            return redirect()->route('boardList')->with('success', '게시글이 성공적으로 등록되었습니다.'); 
+            return redirect()->route('boardList')->with('success', '게시글이 성공적으로 등록되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
