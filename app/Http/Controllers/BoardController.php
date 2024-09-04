@@ -15,7 +15,6 @@ class BoardController extends Controller
             ->leftjoin('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
             ->select(
                 'gemiso_se.board.*',
-                // 'gemiso_se.schedule.*',
                 'gemiso_se.user.name as user_name',
                 DB::raw('CASE WHEN gemiso_se.schedule.board_id IS NOT NULL THEN \'Y\' ELSE \'N\' END AS sch_yn')
             )
@@ -44,7 +43,7 @@ class BoardController extends Controller
             // 게시판 목록을 조회합니다.
 
             // // 쿼리 로그 활성화
-            // dd(DB::getQueryLog()); 
+            // dd(DB::getQueryLog());
 
             return view('boardList', ['board' => $board]);
         } catch (\Exception $e) {
