@@ -39,8 +39,12 @@
 
                 },
                 select: function (arg) {
-                    // 일정 등록 페이지로 이동할 URL 생성
-                    var url = '/insertsch' ;
+                    // 선택한 날짜 정보를 GET 파라미터로 전달
+                    var start = arg.startStr;
+                    var end = arg.endStr;
+
+                    // 일정 등록 페이지로 이동할 URL 생성 (GET 파라미터 포함)
+                    var url = '/insertsch?start_date=' + start + '&end_date=' + end;
 
                     // URL로 리디렉션
                     window.location.href = url;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시판 수정</title>
+    <title>일정 수정</title>
     <style>
         .centered-form {
             max-width: 600px; /* 폼의 최대 너비 설정 */
@@ -20,17 +20,18 @@
 <body>
 @extends('layouts.header')
 
-@section('title', '게시판 수정')
+@section('title', '일정 수정')
 
 @section('content')
     <div class="container mt-5">
         <div class="row mb-4">
             <div class="col-12 centered-form">
-                <h3 class="text-center">게시판 수정</h3>
+                <h3 class="text-center">일정 수정</h3>
                 <!-- 수정 폼 시작 -->
-                <form action="{{ route('boards.update', ['id' => $post->board_id]) }}" method="POST">
+                <form action="{{ route('schedules.update', $post->sch_id) }}" method="POST">
                     @csrf <!-- CSRF 보호 토큰 -->
                     @method('PUT') <!-- PUT 메서드를 사용하여 요청 -->
+                    <input type="hidden" name="sch_id" value="{{ $post->sch_id }}">
 
                     <!-- 제목 입력 필드 -->
                     <div class="mb-3">

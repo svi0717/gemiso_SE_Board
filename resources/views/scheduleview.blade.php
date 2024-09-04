@@ -71,14 +71,15 @@
                     </div>
 
                     <div class="card-footer text-right">
+                        <a href="/schedule" class="btn btn-primary">목록</a>
                         <!-- 수정 및 삭제 버튼 추가 -->
                         @if ($userId == $post->user_id)
-                                {{-- <a href="{{ route('schedules.edit', ['id' => $post->sch_id]) }}" class="btn btn-secondary">수정</a> --}}
-                                {{-- <form action="{{ route('schedules.delete', $post->sch_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                <a href="{{ route('schedules.edit', $post->sch_id) }}" class="btn btn-secondary">수정</a>
+                                <form action="{{ route('schedules.delete', $post->sch_id) }}" method="POST" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">삭제</button>
-                                </form> --}}
+                                </form>
                         @endif
                     </div>
                 </div>
