@@ -35,8 +35,10 @@
                         arg.dayNumberText = arg.date.getDate();
                     }
                 },
-                eventDrop: function(arg) {
-
+                dateClick: function(arg) { 
+                var selectedDate = arg.dateStr;  // 날짜 클릭 시
+                var url = '/scheduleList?date=' + selectedDate; // 선택된 날짜를 URL 파라미터로 전달
+                window.location.href = url;  // URL로 리디렉션
                 },
                 select: function (arg) {
                     // 선택한 날짜 정보를 GET 파라미터로 전달

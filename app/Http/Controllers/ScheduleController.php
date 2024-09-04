@@ -8,28 +8,106 @@ use App\Models\Schedule; // Schedule 모델을 import
 
 class ScheduleController extends Controller
 {
+
     public function scheduleList(Request $request)
     {
         try {
-            // 현재 사용자 ID를 가져옴
-            $user_id = Auth::user()->user_id;
+            $query = DB::table('gemiso_se.schedule')
+            ->leftjoin('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
+            ->select(
+                'gemiso_se.schedule.*',
+                // 'gemiso_se.schedule.*',
+                'gemiso_se.user.name as user_name',
+            )
+            ->where('gemiso_se.schedule.delete_yn', '=', 'N');
 
-            // 사용자의 일정과 관련된 데이터를 가져오고, delete_yn이 'N'인 일정만 선택
-            $schedule = DB::table('gemiso_se.schedule')
-                ->join('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
-                ->select('gemiso_se.schedule.*', 'gemiso_se.user.name as user_name')
-                ->where('gemiso_se.schedule.user_id', $user_id)
-                ->where('gemiso_se.schedule.delete_yn', '=', 'N')
-                ->get();
+            // 날짜 필터링
+            if ($request->has('start_date') && $request->has('end_date') && $request->input('start_date') && $request->input('end_date')) {
+                $query->whereDate('start_date', '<=', $request->input('start_date'));
+                $query->whereDate('end_date', '>=', $request->input('end_date'));
+            }
+          
 
-            // 일정 목록을 뷰에 전달
-            return view('schedule', ['schedule' => $schedule]);
+            // 제목 검색
+            if ($request->has('search') && $request->input('search')) {
+                $search = $request->input('search');
+                $query->where('gemiso_se.schedule.title', 'like', "%$search%");
+            }
+
+            $query->orderBy('gemiso_se.schedule.reg_date', 'desc');
+            
+            // DB::enableQueryLog();  
+            $schedule = $query->paginate(10);
+            // dd($board);
+            // 목록을 조회합니다.
+
+            // // 쿼리 로그 활성화
+            // dd(DB::getQueryLog()); 
+
+            return view('scheduleList', ['schedule' => $schedule]);
         } catch (\Exception $e) {
             // 예외 발생 시 JSON 형식으로 에러 메시지 반환
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+    private function formatDate($date)
+    {
+        try {
+            $formattedDate = \Carbon\Carbon::parse($date)->format('Y-m-d');
+            return $formattedDate;
+        } catch (\Exception $e) {
+            // 잘못된 날짜 형식일 때 처리할 내용
+            return null;
+        }
+    }
 
+    public function scheduleLists(Request $request)
+    {
+        try {
+            $date = $request->input('date');
+
+            $date = $this->formatDate($date);
+            if (!$date) {
+                // 날짜 형식이 잘못된 경우 처리
+                throw new \Exception("Invalid date format.");
+            }
+
+            // 기본 쿼리 설정
+            $query = DB::table('gemiso_se.schedule')
+                ->leftJoin('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
+                ->select(
+                    'gemiso_se.schedule.*',
+                    'gemiso_se.user.name as user_name'
+                )
+                ->whereDate('start_date', '<=', $date)
+                ->whereDate('end_date', '>=', $date)
+                ->where('gemiso_se.schedule.delete_yn', '=', 'N');
+
+            // 날짜 필터링
+            if ($request->has('start_date') && $request->has('end_date') && $request->input('start_date') && $request->input('end_date')) {
+                $query->whereBetween('gemiso_se.schedule.start_date', [$request->input('start_date'), $request->input('end_date')]);
+            }
+
+            // 제목 검색
+            if ($request->has('search') && $request->input('search')) {
+                $search = $request->input('search');
+                $query->where('gemiso_se.schedule.title', 'like', "%$search%");
+            }
+
+            // 정렬
+            $query->orderBy('gemiso_se.schedule.reg_date', 'desc');
+            
+              
+            // 페이지네이션
+            $schedule = $query->paginate(10);
+
+            // dd(DB::getQueryLog()); 
+            // 뷰 반환
+            return view('scheduleList', ['schedule' => $schedule]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+}
     public function showSchedule($sch_id)
     {
         try {
