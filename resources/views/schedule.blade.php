@@ -35,9 +35,12 @@
                         arg.dayNumberText = arg.date.getDate();
                     }
                 },
+                eventDrop: function(arg) {
+
+                },
                 select: function (arg) {
-                    // 게시물 등록 페이지로 이동할 URL 생성
-                    var url = '/insert?category=일정관리&start=' + arg.startStr + '&end=' + arg.endStr;
+                    // 일정 등록 페이지로 이동할 URL 생성
+                    var url = '/insertsch' ;
 
                     // URL로 리디렉션
                     window.location.href = url;
@@ -69,7 +72,11 @@
     @extends('layouts.header')
     @section('title', '일정관리')
     @section('content')
-    <div id='calendar'></div>
+    <div id='calendar'>
+    </div>
+    <div class="text-right">
+            <a href="/insertsch" class="btn btn-primary">등록</a>
+        </div>
     @endsection
 </body>
 </html>
