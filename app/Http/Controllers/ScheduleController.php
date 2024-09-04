@@ -11,18 +11,25 @@ class ScheduleController extends Controller
     public function scheduleList(Request $request)
     {
         try {
-            // $query = DB::table('gemiso_se.schedule')
-            //     ->join('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
-            //     ->select('gemiso_se.schedule.*', 'gemiso_se.user.name as user_name')
-            //     ->where('gemiso_se.schedule.delete_yn', '=', 'N');
+            // 현재 사용자 ID를 가져옴
             $user_id = Auth::user()->user_id;
-            $schedule = DB::table('gemiso_se.schedule')->where('user_id', $user_id)->get();
 
+            // 사용자의 일정과 관련된 데이터를 가져오고, delete_yn이 'N'인 일정만 선택
+            $schedule = DB::table('gemiso_se.schedule')
+                ->join('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
+                ->select('gemiso_se.schedule.*', 'gemiso_se.user.name as user_name')
+                ->where('gemiso_se.schedule.user_id', $user_id)
+                ->where('gemiso_se.schedule.delete_yn', '=', 'N')
+                ->get();
+
+            // 일정 목록을 뷰에 전달
             return view('schedule', ['schedule' => $schedule]);
         } catch (\Exception $e) {
+            // 예외 발생 시 JSON 형식으로 에러 메시지 반환
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+
     public function showSchedule($sch_id)
     {
         try {
@@ -38,7 +45,7 @@ class ScheduleController extends Controller
                 return redirect()->route('schedule')->with('error', '스케줄을 찾을 수 없습니다.');
             }
 
-            return view('scheduleview', ['post' => $post, 'userId' => $userId, 'type' => 'schedule']);
+            return view('scheduleview', ['post' => $post, 'userId' => $userId]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -85,7 +92,7 @@ class ScheduleController extends Controller
             ]);
 
               return redirect()->route('schedule')->with('success', '일정이 성공적으로 등록되었습니다.');
-            
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -110,10 +117,13 @@ class ScheduleController extends Controller
     public function editSchedule($sch_id)
     {
         // 수정할 게시글 데이터 가져오기
-        $post = DB::table('gemiso_se.schedule')->where('sch_id', $sch_id)->first();
+        $post = DB::table('gemiso_se.schedule')
+        ->leftJoin('gemiso_se.user', 'gemiso_se.user.user_id', '=', 'gemiso_se.schedule.user_id')
+        ->select('gemiso_se.schedule.*', 'gemiso_se.user.name as user_name')
+        ->where('gemiso_se.schedule.sch_id', $sch_id)->first();
 
         // 수정 페이지로 이동
-        return view('editboard', ['post' => $post, 'type' => 'schedule']);
+        return view('editschedule', ['post' => $post]);
     }
 
     public function updateSchedule(Request $request, $sch_id)
@@ -126,12 +136,11 @@ class ScheduleController extends Controller
             ]);
 
             // 게시글 업데이트
-            DB::table('gemiso_se.board')
+            DB::table('gemiso_se.schedule')
                 ->where('sch_id', $sch_id)
                 ->update([
                     'title' => $validated['title'],
                     'content' => $validated['content'],
-                    'upd_date' => now()->toDateString()
                 ]);
 
             // 플래시 메시지 설정 후 게시판 목록으로 리다이렉트
