@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시물 조회</title>
+    <title>일정 조회</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <style>
@@ -47,7 +47,7 @@
 <body>
 @extends('layouts.header')
 
-@section('title', '게시물 조회')
+@section('title', '일정 조회')
 
 @section('content')
     <div class="container mt-5">
@@ -73,6 +73,9 @@
 
                     
                     <div class="card-footer text-right">
+                    <form action="{{ route('boards.show', ['id' => $post->board_id]) }}" method="GET" style="display: inline;">
+                        <button type="submit" class="btn btn-primary">해당 게시판으로 이동</button>
+                    </form>
                         <a href="{{ request()->get('previous_url', '/schedule') }}" class="btn btn-primary">목록</a>
                         <!-- 수정 및 삭제 버튼 추가 -->
                         @if ($userId == $post->user_id)
