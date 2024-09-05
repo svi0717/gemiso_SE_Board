@@ -58,9 +58,9 @@
         <table class="table">
             <thead class="table-header">
                 <tr>
-                    <th style="width: 90px;">번호</th>
-                    <th>일정 보기</th> <!-- 새 열 추가 -->
-                    <th style="width: 400px;">제목</th>
+                    <th style="width: 100px;">번호</th>
+                    <th style="width: 100px;">일정 유무</th>
+                    <th style="width: 300px;">제목</th>
                     <th style="width: 150px;">작성자</th>
                     <th>등록일자</th>
                     <th>수정일자</th>
@@ -79,9 +79,9 @@
                                 ->exists();
                         @endphp
                         @if($hasSchedules) <!-- 연동된 일정이 있는 경우 -->
-                            <a href="{{ route('scheduleList', ['board_id' => $item->board_id]) }}" class="btn btn-info">일정 보기</a>
+                            <input type="checkbox" checked disabled>
                         @else
-                            <button class="btn btn-info btn-disabled" disabled>일정 없음</button>
+                            <input type="checkbox" disabled>
                         @endif
                     </td>
                     <td>

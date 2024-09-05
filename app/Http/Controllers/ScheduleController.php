@@ -138,15 +138,16 @@ class ScheduleController extends Controller
     {
         try {
             $userId = Auth::user()->user_id;
-            // 스케줄 조회
+
             $post = DB::table('gemiso_se.schedule')
-            ->leftJoin('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
-            ->select('gemiso_se.schedule.*', 'gemiso_se.user.name as user_name')
-            ->where('gemiso_se.schedule.sch_id', $sch_id)
-            ->first();
+                ->leftJoin('gemiso_se.board', 'gemiso_se.schedule.board_id', '=', 'gemiso_se.board.board_id')
+                ->leftJoin('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
+                ->select('gemiso_se.schedule.*', 'gemiso_se.board.*', 'gemiso_se.user.name as user_name')
+                ->where('gemiso_se.schedule.sch_id', $sch_id)
+                ->first();
 
             if (!$post) {
-                return redirect()->route('schedule')->with('error', '스케줄을 찾을 수 없습니다.');
+                return redirect()->route('scheduleList')->with('error', '일정을 찾을 수 없습니다.');
             }
 
             return view('scheduleview', ['post' => $post, 'userId' => $userId]);
@@ -154,6 +155,8 @@ class ScheduleController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+    
+    
 
     public function showInsertForm()
     {
