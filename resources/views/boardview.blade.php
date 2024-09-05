@@ -1,3 +1,4 @@
+
 <style>
     .table a {
         color: black !important;
@@ -21,8 +22,7 @@
             align-items: center;
         }
 </style>
-
-
+<link href="{{ asset('css/custom-buttons.css') }}" rel="stylesheet">
 @extends('layouts.header')
 
 @section('title', '게시물 조회')
@@ -47,7 +47,7 @@
                         <div class="content">{{ $post->content }}</div>
                     </div>
                     <div class="card-footer text-right">
-                        <a href="/boardList" class="btn btn-primary">목록</a>
+                        <a href="/boardList" class="btn-custom">목록</a>
                         @if ($userId == $post->user_id)
                             <a href="{{ route('boards.edit', ['id' => $post->board_id]) }}" class="btn btn-secondary">수정</a>
                             <form action="{{ route('boards.delete', $post->board_id) }}" method="POST"
@@ -113,35 +113,31 @@
     <script>
         const scheduleRows = document.querySelectorAll('.schedule-row');
         const loadMoreBtn = document.getElementById('loadMoreBtn');
-        let visibleRows = 4; // 처음에 표시할 행 수
-        const increment = 4; // 한 번에 추가로 표시할 행 수
+        const maxrow = 4; // 처음에 표시할 행 수
 
         // 초기 표시 설정
         scheduleRows.forEach((row, index) => {
-            if (index >= visibleRows) {
+            if (index >= maxrow) {
                 row.style.display = 'none';
             }
         });
 
         // 더보기 버튼이 필요할 때만 표시
-        if (scheduleRows.length > visibleRows) {
+        if (scheduleRows.length > maxrow) {
             loadMoreBtn.style.display = 'block';
         }
 
         // 더보기 버튼 클릭 시
         loadMoreBtn.addEventListener('click', () => {
-            visibleRows += increment;
-            scheduleRows.forEach((row, index) => {
-                if (index < visibleRows) {
-                    row.style.display = '';
-                }
+            // 모든 행을 표시
+            scheduleRows.forEach((row) => {
+                row.style.display = '';
             });
 
-            // 더이상 표시할 행이 없으면 버튼 숨기기
-            if (visibleRows >= scheduleRows.length) {
-                loadMoreBtn.style.display = 'none';
-            }
+            // 버튼 숨기기
+            loadMoreBtn.style.display = 'none';
         });
+
 
         // 현재 날짜 표시
         const date = new Date();

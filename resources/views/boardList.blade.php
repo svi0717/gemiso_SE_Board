@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판 목록</title>
 </head>
+<link href="{{ asset('css/custom-buttons.css') }}" rel="stylesheet">
 <style>
     .col-md-12 {
         margin-left: 315px;
@@ -27,6 +28,7 @@
         opacity: 0.5;
     }
 </style>
+
 <body>
 @extends('layouts.header')
 
@@ -51,7 +53,7 @@
                         <label for="searchQuery" class="mr-2">검색</label>
                         <input type="text" class="form-control" id="searchQuery" name="search" placeholder="검색어 입력" value="{{ request()->query('search') }}">
                     </div>
-                    <button type="submit" class="btn btn-primary">검색</button>
+                    <button type="submit" class="btn-custom">검색</button>
                 </form>
             </div>
         </div>
@@ -97,7 +99,7 @@
             </tbody>
         </table>
         <div class="text-right">
-            <a href="/insertboard" class="btn btn-primary">등록</a>
+            <a href="/insertboard" class="btn-custom">등록</a>
         </div>
         <nav class="fixed-bottom-pagination">
             <ul class="pagination justify-content-center">

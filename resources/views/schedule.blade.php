@@ -10,6 +10,7 @@
             color: #000000 !important;
         }
     </style>
+    <link href="{{ asset('css/custom-buttons.css') }}" rel="stylesheet">
     <link href='css/main.css' rel='stylesheet' />
     <script src='js/main.js'></script>
     <script src='js/locales-all.js'></script>
@@ -81,7 +82,7 @@
     <div id='calendar'>
     </div>
     <div class="text-right">
-            <a href="/insertsch" class="btn btn-primary">등록</a>
+            <a href="/insertsch" class="btn-custom">등록</a>
         </div>
     @endsection
 </body>

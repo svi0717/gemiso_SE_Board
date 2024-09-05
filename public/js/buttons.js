@@ -8,7 +8,7 @@ function createButton(text, url) {
      button.style.padding = '10px 20px';
      button.style.fontSize = '20px';
      button.style.cursor = 'pointer';
-     button.style.backgroundColor = '#007bff'; // 버튼 배경 색상
+     button.style.backgroundColor = '#2BA8E0'; // 버튼 배경 색상
      button.style.color = '#fff'; // 버튼 글자 색상
      button.style.border = 'none';
      button.style.borderRadius = '5px'; // 버튼 모서리 둥글게
@@ -18,10 +18,10 @@ function createButton(text, url) {
  
      // 버튼에 마우스를 올렸을 때 스타일
      button.onmouseover = function() {
-         button.style.backgroundColor = '#0056b3'; // 호버 시 배경 색상
+         button.style.backgroundColor = '#1E8AC0'; // 호버 시 배경 색상
      };
      button.onmouseout = function() {
-         button.style.backgroundColor = '#007bff'; // 원래 색상으로 복귀
+         button.style.backgroundColor = '#2BA8E0'; // 원래 색상으로 복귀
      };
     return button;
 }

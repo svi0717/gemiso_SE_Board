@@ -11,10 +11,10 @@
 
     <style>
         .btn-custom {
-            font-size: 20px; /* 버튼 글씨 크기 조정 */
-            padding: 10px 20px; /* 버튼 패딩 조정 */
-            width: 60%; /* 버튼의 폭을 컨테이너에 맞춤 */
-            text-align: center; /* 버튼 텍스트 가운데 정렬 */
+        font-size: 20px; /* 버튼 글씨 크기 조정 */
+        padding: 10px 20px; /* 버튼 패딩 조정 */
+        width: 60%; /* 버튼의 폭을 컨테이너에 맞춤 */
+        text-align: center; /* 버튼 텍스트 가운데 정렬 */
         }
 
         .sidebar {
@@ -33,11 +33,14 @@
         .sidebar div {
             margin-bottom: 20px; /* 버튼 간의 위아래 간격 조정 */
         }
+        .custom-navbar{
+            background-color: #2BA8E0;
+        }
     </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
             <a class="navbar-brand" href="{{ auth()->check() ? '/boardList' : '/' }}">Gemiso SE</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ml-auto">
