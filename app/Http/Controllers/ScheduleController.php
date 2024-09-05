@@ -75,13 +75,13 @@ class ScheduleController extends Controller
                 )
                 ->where('gemiso_se.schedule.delete_yn', '=', 'N');
 
-            
+
             // 게시판 ID 필터링 추가
             if ($request->has('board_id') && $request->input('board_id')) {
                 $boardId = $request->input('board_id');
                 $query->where('gemiso_se.schedule.board_id', $boardId);
             }
-            
+
             // 입력 받은 date 값을 처리하고 형식 확인
             if ($request->has('date') && $request->input('date')) {
                 $date = $request->input('date');

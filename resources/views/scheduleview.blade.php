@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시물 조회</title>
+    <title>일정 조회</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <style>
@@ -47,13 +47,13 @@
 <body>
 @extends('layouts.header')
 
-@section('title', '게시물 조회')
+@section('title', '일정 조회')
 
 @section('content')
     <div class="container mt-5">
         <div class="row">
             <div class="col-12 centered-form">
-              
+
                 <div class="card">
                     <div class="card-header">
                         일정 조회
@@ -71,7 +71,7 @@
                         <div class="content">{{ $post->content }}</div>
                     </div>
 
-                    
+
                     <div class="card-footer text-right">
                         <a href="{{ request()->get('previous_url', '/schedule') }}" class="btn btn-primary">목록</a>
                         <!-- 수정 및 삭제 버튼 추가 -->
