@@ -69,7 +69,7 @@ class BoardController extends Controller
     }
 
     public function showBoard($id)
-{
+    {  
     try {
         $userId = Auth::user()->user_id;
 
@@ -102,10 +102,7 @@ class BoardController extends Controller
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()]);
     }
-}
-
-
-
+    }
 
     public function edit($id)
     {
@@ -174,6 +171,8 @@ class BoardController extends Controller
                 'start_date' => 'nullable|date_format:Y-m-d',
                 'end_date' => 'nullable|date_format:Y-m-d',
             ]);
+
+            // $content = strip_tags($validated['content']);
             DB::table('gemiso_se.board')->insert([
                 'title' => $validated['title'],
                 'user_id' => $user_id,
@@ -189,4 +188,5 @@ class BoardController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-}
+    
+    }

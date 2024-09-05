@@ -44,8 +44,9 @@
                     </div>
                     <div class="card-body content-layout">
                         <!-- 게시물 내용 -->
-                        <div class="content">{{ $post->content }}</div>
+                        <div class="content">{!! $post->content !!}</div>
                     </div>
+                    
                     <div class="card-footer text-right">
                         <a href="/boardList" class="btn-custom">목록</a>
                         @if ($userId == $post->user_id)
