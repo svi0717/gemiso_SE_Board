@@ -64,15 +64,6 @@ class ScheduleController extends Controller
     public function scheduleLists(Request $request)
     {
         try {
-            // 입력 받은 date 값을 처리하고 형식 확인
-            $date = $request->input('date');
-            $date = $this->formatDate($date);
-
-            if (!$date) {
-                // 날짜 형식이 잘못된 경우 처리
-                throw new \Exception("Invalid date format.");
-            }
-
             // 기본 쿼리 설정
             $query = DB::table('gemiso_se.schedule')
                 ->leftJoin('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
@@ -82,22 +73,42 @@ class ScheduleController extends Controller
                     'gemiso_se.user.name as user_name',
                     'gemiso_se.board.title as board_title' // 게시판 제목
                 )
-                ->where('gemiso_se.schedule.delete_yn', '=', 'N')
-                ->where('start_date', '<=', $date)
-                ->where('end_date', '>=', $date);
+                ->where('gemiso_se.schedule.delete_yn', '=', 'N');
+
+            
+            // 게시판 ID 필터링 추가
+            if ($request->has('board_id') && $request->input('board_id')) {
+                $boardId = $request->input('board_id');
+                $query->where('gemiso_se.schedule.board_id', $boardId);
+            }
+            
+            // 입력 받은 date 값을 처리하고 형식 확인
+            if ($request->has('date') && $request->input('date')) {
+                $date = $request->input('date');
+                $date = $this->formatDate($date);
+
+                if (!$date) {
+                    // 날짜 형식이 잘못된 경우 처리
+                    throw new \Exception("Invalid date format.");
+                }
+
+                // 특정 날짜에 대한 일정 필터링
+                $query->where('start_date', '<=', $date)
+                    ->where('end_date', '>=', $date);
+            }
 
             // 사용자가 입력한 시작일자와 종료일자를 기준으로 일정 필터링
             if ($request->has('start_date') && $request->has('end_date') && $request->input('start_date') && $request->input('end_date')) {
                 $startDate = $request->input('start_date');
                 $endDate = $request->input('end_date');
 
-                $query->where(function($query) use ($startDate, $endDate) {
+                $query->where(function ($query) use ($startDate, $endDate) {
                     $query->whereBetween('gemiso_se.schedule.start_date', [$startDate, $endDate])
-                          ->orWhereBetween('gemiso_se.schedule.end_date', [$startDate, $endDate])
-                          ->orWhere(function($query) use ($startDate, $endDate) {
-                              $query->where('gemiso_se.schedule.start_date', '<=', $startDate)
-                                    ->where('gemiso_se.schedule.end_date', '>=', $endDate);
-                    });
+                        ->orWhereBetween('gemiso_se.schedule.end_date', [$startDate, $endDate])
+                        ->orWhere(function ($query) use ($startDate, $endDate) {
+                            $query->where('gemiso_se.schedule.start_date', '<=', $startDate)
+                                ->where('gemiso_se.schedule.end_date', '>=', $endDate);
+                        });
                 });
             }
 
@@ -107,11 +118,6 @@ class ScheduleController extends Controller
                 $query->where('gemiso_se.schedule.title', 'like', "%$search%");
             }
 
-            // 게시판 ID 필터링 추가
-            if ($request->has('board_id') && $request->input('board_id')) {
-                $boardId = $request->input('board_id');
-                $query->where('gemiso_se.schedule.board_id', $boardId);
-            }
 
             // 일정 등록 날짜로 정렬
             $query->orderBy('gemiso_se.schedule.reg_date', 'desc');
@@ -121,7 +127,6 @@ class ScheduleController extends Controller
 
             // 뷰 반환
             return view('scheduleList', ['schedule' => $schedule]);
-
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }

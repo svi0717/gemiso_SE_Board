@@ -53,6 +53,7 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-12 centered-form">
+              
                 <div class="card">
                     <div class="card-header">
                         일정 조회
@@ -70,6 +71,7 @@
                         <div class="content">{{ $post->content }}</div>
                     </div>
 
+                    
                     <div class="card-footer text-right">
                         <a href="{{ request()->get('previous_url', '/schedule') }}" class="btn btn-primary">목록</a>
                         <!-- 수정 및 삭제 버튼 추가 -->

@@ -37,6 +37,9 @@
             </strong>
             <div class="col-md-12">
             <form class="form-inline" method="GET" action="{{ route('scheduleList') }}">
+                @if(request()->has('board_id'))
+                    <input type="hidden" name="board_id" value="{{ request()->query('board_id') }}">
+                @endif
                 <div class="form-group mr-2">
                     <input type="date" class="form-control" id="startDate" name="start_date">
                 </div>
