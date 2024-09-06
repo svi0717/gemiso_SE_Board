@@ -3,6 +3,15 @@
 @section('title', '일정 등록')
 
 @section('content')
+    <!-- include libraries(jQuery, bootstrap) -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+
+    <!-- include summernote css/js-->
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
     <div class="container mt-5">
         <div class="row mb-4">
             <div class="col-12 centered-form">
@@ -41,7 +50,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="content" class="form-label">내용</label>
-                        <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+                        <textarea id="summernote" name="content" class="form-control" rows="10" required></textarea>
                     </div>
                     <input type="hidden" name="user_id" value="{{ $userId }}">
                     <div class="text-right">
@@ -98,6 +107,20 @@
                 }
             });
         });
+        $(document).ready(function() {
+        $('#summernote').summernote({
+            placeholder: '내용을 작성하세요',
+            height: 300,
+            maxHeight: 300,
+            lang: 'ko-KR'
+        });
+
+        // 폼 제출 전에 Summernote 내용을 textarea에 동기화
+        $('form').on('submit', function() {
+            var summernoteContent = $('#summernote').summernote('code');
+            $('#summernote').val(summernoteContent);
+        });
+    });
     </script>
 
 @endsection

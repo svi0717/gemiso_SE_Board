@@ -18,6 +18,7 @@ Route::get('/boardList', [BoardController::class, 'boardlist'])->name('boardList
 // 일정 목록을 보여주는 라우트
 Route::get('/scheduleList', [ScheduleController::class, 'scheduleLists'])->name('scheduleList');
 
+Route::get('/file/download/{id}', [BoardController::class, 'downloadFile'])->name('file.download');
 
 // 게시판 등록 폼을 보여주는 라우트
 Route::get('/insertboard', [BoardController::class, 'showInsertForm'])->name('boards.create');
