@@ -141,8 +141,17 @@ class ScheduleController extends Controller
 
             $post = DB::table('gemiso_se.schedule')
                 ->leftJoin('gemiso_se.board', 'gemiso_se.schedule.board_id', '=', 'gemiso_se.board.board_id')
-                ->leftJoin('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
-                ->select('gemiso_se.schedule.*', 'gemiso_se.board.*', 'gemiso_se.user.name as user_name')
+                ->leftJoin('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
+                ->select(
+                    'gemiso_se.schedule.sch_id',
+                    'gemiso_se.schedule.title as schedule_title',
+                    'gemiso_se.schedule.content as schedule_content',
+                    'gemiso_se.schedule.start_date',
+                    'gemiso_se.schedule.end_date',
+                    'gemiso_se.schedule.board_id',
+                    'gemiso_se.schedule.user_id as user_id',
+                    'gemiso_se.user.name as user_name'
+                )
                 ->where('gemiso_se.schedule.sch_id', $sch_id)
                 ->first();
 
@@ -150,13 +159,22 @@ class ScheduleController extends Controller
                 return redirect()->route('scheduleList')->with('error', '일정을 찾을 수 없습니다.');
             }
 
-            return view('scheduleview', ['post' => $post, 'userId' => $userId]);
+            // 날짜를 previous_url에 포함시키기
+            $previousUrl = url('/scheduleList') . '?date=' . urlencode($post->start_date);
+
+            return view('scheduleview', [
+                'post' => $post,
+                'userId' => $userId,
+                'previous_url' => $previousUrl
+            ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-    
-    
+
+
+
+
 
     public function showInsertForm()
     {

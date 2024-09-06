@@ -89,7 +89,7 @@
                                         <tr class="schedule-row">
                                             <td>{{ $loop->iteration }}</td>
                                             <td class="text-truncate" style="max-width: 250px;">
-                                                <a href="{{ route('schedules.show', $item->sch_id) }}?previous_url={{ urlencode(url()->full()) }}">{{ $item->title }}</a>
+                                                <a href="{{ route('schedules.show', $item->sch_id) }}?previous_url={{ urlencode(route('schedule')) }}">{{ $item->title }}</a>
                                             </td>
                                             <td>{{ $post->user_name }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item->reg_date)->format('Y-m-d') }}</td>

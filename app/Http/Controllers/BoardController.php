@@ -69,40 +69,46 @@ class BoardController extends Controller
     }
 
     public function showBoard($id)
-{
-    try {
-        $userId = Auth::user()->user_id;
+    {
+        try {
+            $userId = Auth::user()->user_id;
 
-        // 게시물 데이터 가져오기
-        $post = DB::table('gemiso_se.board')
-            ->leftJoin('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
-            ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name')
-            ->where('gemiso_se.board.board_id', $id)
-            ->first();
+            // 게시물 데이터 가져오기
+            $post = DB::table('gemiso_se.board')
+                ->leftJoin('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
+                ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name')
+                ->where('gemiso_se.board.board_id', $id)
+                ->first();
 
-        if (!$post) {
-            return redirect()->route('boardList')->with('error', '게시글을 찾을 수 없습니다.');
+            if (!$post) {
+                return redirect()->route('boardList')->with('error', '게시글을 찾을 수 없습니다.');
+            }
+
+            // 조회수 증가
+            DB::table('gemiso_se.board')->where('board_id', $id)->increment('views');
+
+            // 게시물과 연관된 일정 데이터 가져오기
+            $schedules = DB::table('gemiso_se.schedule')
+                ->where('board_id', $id)
+                ->get();
+
+            // 일정 데이터에서 첫 번째 일정의 시작일자 가져오기
+            $firstSchedule = $schedules->first();
+            $dateParam = $firstSchedule ? $firstSchedule->start_date : null;
+
+            // 뷰로 데이터 전달
+            return view('boardview', [
+                'post' => $post,
+                'userId' => $userId,
+                'schedules' => $schedules,
+                'type' => 'board',
+                'dateParam' => $dateParam // 추가된 날짜 파라미터
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
         }
-
-        // 조회수 증가
-        DB::table('gemiso_se.board')->where('board_id', $id)->increment('views');
-
-        // 게시물과 연관된 일정 데이터 가져오기
-        $schedules = DB::table('gemiso_se.schedule')
-            ->where('board_id', $id)
-            ->get();
-
-        // 뷰로 데이터 전달
-        return view('boardview', [
-            'post' => $post,
-            'userId' => $userId,
-            'schedules' => $schedules,
-            'type' => 'board'
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
     }
-}
+
 
 
 
