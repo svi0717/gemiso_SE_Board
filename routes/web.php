@@ -6,6 +6,22 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('/schedule', [ScheduleController::class, 'scheduleList'])->name('schedule');
+Route::post('/schedule', [BoardController::class, 'insertBoard'])->name('schedule');
+
+Route::get('/editboard', function () {
+    return view('editboard');
+});
+
+// 게시판 목록을 보여주는 라우트
+Route::get('/boardList', [BoardController::class, 'boardlist'])->name('boardList');
+
+// 일정 목록을 보여주는 라우트
+Route::get('/scheduleList', [ScheduleController::class, 'scheduleLists'])->name('scheduleList');
+
+Route::get('/file/download/{id}', [BoardController::class, 'downloadFile'])->name('file.download');
+
 // 공개 페이지 (미들웨어 필요 없음)
 Route::view('/', 'login')->name('login.form');
 Route::post('/login', [UserController::class, 'login'])->name('login');
@@ -17,6 +33,7 @@ Route::post('/find-Password', [UserController::class, 'findPassword'])->name('fi
 Route::post('/password/update', [UserController::class, 'updatePassword'])->name('updatePassword');
 Route::view('/findPasswordCompleted', 'findPasswordCompleted')->name('findPasswordCompleted');
 Route::view('/join', 'join');
+
 
 // 로그아웃 라우트
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');

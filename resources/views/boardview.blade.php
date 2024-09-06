@@ -44,8 +44,21 @@
                     </div>
                     <div class="card-body content-layout">
                         <!-- 게시물 내용 -->
-                        <div class="content">{{ $post->content }}</div>
+                        <div class="content">{!! $post->content !!}</div>
+                        @if (count($files) > 0)
+                            <h5 class="mt-4">첨부 파일</h5>
+                            <ul>
+                                @foreach ($files as $file)
+                                    <li>
+                                        <a href="{{ route('file.download', $file->id) }}">{{ $file->file_name }}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p>첨부 파일이 없습니다.</p>
+                        @endif
                     </div>
+                    
                     <div class="card-footer text-right">
                         <a href="/boardList" class="btn-custom">목록</a>
                         @if ($userId == $post->user_id)

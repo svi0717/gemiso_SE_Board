@@ -69,9 +69,11 @@ class BoardController extends Controller
     }
 
     public function showBoard($id)
+
     {
         try {
             $userId = Auth::user()->user_id;
+
 
             // 게시물 데이터 가져오기
             $post = DB::table('gemiso_se.board')
@@ -87,31 +89,29 @@ class BoardController extends Controller
             // 조회수 증가
             DB::table('gemiso_se.board')->where('board_id', $id)->increment('views');
 
-            // 게시물과 연관된 일정 데이터 가져오기
-            $schedules = DB::table('gemiso_se.schedule')
-                ->where('board_id', $id)
-                ->get();
 
-            // 일정 데이터에서 첫 번째 일정의 시작일자 가져오기
-            $firstSchedule = $schedules->first();
-            $dateParam = $firstSchedule ? $firstSchedule->start_date : null;
+        // 게시물과 연관된 일정 데이터 가져오기
+        $schedules = DB::table('gemiso_se.schedule')
+            ->where('board_id', $id)
+            ->get();
 
-            // 뷰로 데이터 전달
-            return view('boardview', [
-                'post' => $post,
-                'userId' => $userId,
-                'schedules' => $schedules,
-                'type' => 'board',
-                'dateParam' => $dateParam // 추가된 날짜 파라미터
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
-        }
+        // 게시물과 연관된 파일 데이터 가져오기
+        $files = DB::table('gemiso_se.files')
+        ->where('board_id', $id)
+        ->get();
+
+        // 뷰로 데이터 전달
+        return view('boardview', [
+            'post' => $post,
+            'userId' => $userId,
+            'schedules' => $schedules,
+            'files' => $files, 
+            'type' => 'board'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
     }
-
-
-
-
+    }
 
     public function edit($id)
     {
@@ -172,15 +172,17 @@ class BoardController extends Controller
     {
         try {
             $user_id = Auth::user()->user_id;
+    
             // 요청 데이터 검증
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
                 'content' => 'required|string',
                 'user_id' => 'required|string',
-                'start_date' => 'nullable|date_format:Y-m-d',
-                'end_date' => 'nullable|date_format:Y-m-d',
+                'files.*' => 'nullable|file|mimes:jpg,png,pdf,docx,doc|max:2048',
             ]);
-            DB::table('gemiso_se.board')->insert([
+    
+            // 게시글 저장
+            $boardId = DB::table('gemiso_se.board')->insertGetId([
                 'title' => $validated['title'],
                 'user_id' => $user_id,
                 'content' => $validated['content'],
@@ -188,11 +190,43 @@ class BoardController extends Controller
                 'upd_date' => now()->toDateString(),
                 'views' => 0,
                 'delete_yn' => 'N',
-            ]);
+            ], 'board_id'); // 여기서 'board_id'를 사용합니다.
 
+            // 파일 저장
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    if ($file) { // 파일이 실제로 있는지 확인
+                        $filePath = $file->store('files', 'public'); // 'public/files' 디렉토리에 저장
+                        DB::table('gemiso_se.files')->insert([
+                            'file_name' => $file->getClientOriginalName(),
+                            'file_path' => $filePath,
+                            'file_size' => $file->getSize(),
+                            'file_type' => $file->getClientMimeType(),
+                            'board_id' => $boardId,
+                        ]);
+                    }
+                }
+            }
+    
             return redirect()->route('boardList')->with('success', '게시글이 성공적으로 등록되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-}
+    
+
+    public function downloadFile($id)
+    {
+        try {
+            $file = DB::table('gemiso_se.files')->where('id', $id)->first();
+
+            if (!$file) {
+                return redirect()->back()->with('error', '파일을 찾을 수 없습니다.');
+            }
+
+            return response()->download(storage_path('app/' . $file->file_path), $file->file_name);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', '파일 다운로드 중 오류가 발생했습니다.');
+        }
+    }
+    }
