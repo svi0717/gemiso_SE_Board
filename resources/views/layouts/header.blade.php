@@ -46,7 +46,7 @@
                 <ul class="navbar-nav ml-auto">
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">{{ Auth::user()->name }}</a>
+                            <div class="nav-link text-white" href="#">{{ Auth::user()->name }}</div>
                         </li>
                         <li class="nav-item">
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
