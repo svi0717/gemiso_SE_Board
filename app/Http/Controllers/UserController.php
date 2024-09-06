@@ -16,7 +16,11 @@ class UserController extends Controller
 
     public function loginForm()
     {
-        return view('login'); // 로그인 폼 뷰 파일
+        if (Auth::check()) {
+            return redirect()->route('boardList');
+        }
+
+        return view('login');
     }
 
     // 회원가입 처리 메서드
@@ -42,19 +46,20 @@ class UserController extends Controller
     }
 
     public function login(Request $request)
-    {
-        // 사용자 인증 시도
-        $loginAuth = $request->only('user_id', 'password');
-
-        if (Auth::attempt($loginAuth)) {
-            // 인증 성공, 세션 갱신
-            $request->session()->regenerate();
-            return redirect()->intended('/boardList')->with('success', '로그인 성공');
-        }
-
-        // 인증 실패
-        return redirect()->back()->with('error', '아이디 또는 비밀번호가 일치하지 않습니다.');
+{
+    if (Auth::check()) {
+        return redirect()->route('boardList');
     }
+
+    $credentials = $request->only('user_id', 'password');
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        return redirect()->route('boardList')->with('success', '로그인 성공');
+    }
+
+    return redirect()->back()->with('error', '아이디 또는 비밀번호가 일치하지 않습니다.');
+}
 
     public function logout(Request $request)
     {

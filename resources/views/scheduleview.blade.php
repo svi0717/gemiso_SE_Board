@@ -60,7 +60,7 @@
                         <div class="date-view"> {{ $post->start_date === $post->end_date ? $post->start_date : $post->start_date . ' ~ ' . $post->end_date }}</div>
                     </div>
                     <div class="card-title-container">
-                        <div class="card-title">제목: {{ $post->title }}</div>
+                        <div class="card-title">제목: {{ $post->schedule_title }}</div>
                         <div class="card-subtitle text-muted">
                           작성자: {{ $post->user_name}}
                         </div>
@@ -68,14 +68,19 @@
 
                     <div class="card-body content-layout">
                         <!-- 내용 -->
-                        <div class="content">{{ $post->content }}</div>
+                        <div class="content">{{ $post->schedule_content }}</div>
                     </div>
 
 
                     <div class="card-footer text-right">
-                    <form action="{{ route('boards.show', ['id' => $post->board_id]) }}" method="GET" style="display: inline;">
-                        <button type="submit" class="btn btn-primary">해당 게시판으로 이동</button>
-                    </form>
+                        @if ($post->board_id)
+                        <form action="{{ route('boards.show', ['id' => $post->board_id]) }}" method="GET" style="display: inline;">
+                            <button type="submit" class="btn btn-primary">해당 게시판으로 이동</button>
+                        </form>
+                    @else
+                        <button type="button" class="btn btn-secondary" disabled>연동된 게시판 없음</button>
+                    @endif
+
                         <a href="{{ request()->get('previous_url', '/schedule') }}" class="btn btn-dark">목록</a>
                         <!-- 수정 및 삭제 버튼 추가 -->
                         @if ($userId == $post->user_id)
