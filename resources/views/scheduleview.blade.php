@@ -68,7 +68,7 @@
 
                     <div class="card-body content-layout">
                         <!-- 내용 -->
-                        <div class="content">{{ $post->schedule_content }}</div>
+                        <div class="content">{!! $post->schedule_content !!}</div>
                     </div>
 
 

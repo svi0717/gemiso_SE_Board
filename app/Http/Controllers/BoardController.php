@@ -154,8 +154,6 @@ class BoardController extends Controller
     public function deleteBoard($id)
     {
         try {
-            // 트랜잭션 시작
-            DB::beginTransaction();
 
             // 게시글을 ID를 사용하여 삭제 (delete_yn 업데이트)
             DB::table('gemiso_se.board')
