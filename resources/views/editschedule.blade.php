@@ -23,6 +23,21 @@
 @section('title', '일정 수정')
 
 @section('content')
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- Include Summernote CSS for Bootstrap 4 -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+
+<!-- Include Popper.js for Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+<!-- Include Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+<!-- Include Summernote JS for Bootstrap 4 -->
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
     <div class="container mt-5">
         <div class="row mb-4">
             <div class="col-12 centered-form">
@@ -48,7 +63,7 @@
                     <!-- 내용 입력 필드 -->
                     <div class="mb-3">
                         <label for="content" class="form-label">내용</label>
-                        <textarea class="form-control" id="content" name="content" rows="10">{{ $post->content }}</textarea>
+                        <textarea id="summernote" name="content" class="form-control" rows="10" required>{{ $post->content }}</textarea>
                     </div>
 
                     <!-- 수정 버튼 -->
@@ -60,6 +75,22 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#summernote').summernote({
+                placeholder: '내용을 작성하세요',
+                height: 300,
+                maxHeight: 300,
+                lang: 'ko-KR'
+            });
+
+            // 폼 제출 전에 Summernote 내용을 textarea에 동기화
+            $('form').on('submit', function() {
+                var summernoteContent = $('#summernote').summernote('code');
+                $('#summernote').val(summernoteContent);
+            });
+        });
+        </script>
 @endsection
 </body>
 </html>
