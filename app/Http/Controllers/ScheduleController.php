@@ -188,7 +188,10 @@ class ScheduleController extends Controller
             }
 
             // 게시판 제목 가져오기
-            $boards = DB::table('gemiso_se.board')->select('board_id', 'title')->get();
+            $boards = DB::table('gemiso_se.board')
+            ->select('board_id', 'title')
+            ->where('delete_yn', '=', 'N')
+            ->get();
 
             // 사용자 이름과 ID를 뷰에 전달
             return view('insertsch', [
@@ -253,7 +256,7 @@ class ScheduleController extends Controller
                 'deleted_at' => now()
             ]);
 
-            return redirect()->route('schedule')->with('success', '게시글이 성공적으로 삭제되었습니다.');
+            return redirect()->route('schedule')->with('success', '일정이 성공적으로 삭제되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }

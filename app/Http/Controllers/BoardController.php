@@ -154,15 +154,26 @@ class BoardController extends Controller
     public function deleteBoard($id)
     {
         try {
-            // 게시글을 ID를 사용하여 삭제
-            DB::table('gemiso_se.board')
-            ->where('board_id', $id)
-            ->update([
-                'delete_yn' => 'Y',
-                'deleted_at' => now()
-            ]);
+            // 트랜잭션 시작
+            DB::beginTransaction();
 
-            return redirect()->route('boardList')->with('success', '게시글이 성공적으로 삭제되었습니다.');
+            // 게시글을 ID를 사용하여 삭제 (delete_yn 업데이트)
+            DB::table('gemiso_se.board')
+                ->where('board_id', $id)
+                ->update([
+                    'delete_yn' => 'Y',
+                    'deleted_at' => now()
+                ]);
+
+            // 연관된 일정들도 delete_yn을 Y로 업데이트
+            DB::table('gemiso_se.schedule')  // 일정 테이블명으로 변경 필요
+                ->where('board_id', $id)  // 일정과 게시글을 연결하는 외래 키 필드명으로 변경 필요
+                ->update([
+                    'delete_yn' => 'Y',
+                    'deleted_at' => now()
+                ]);
+
+            return redirect()->route('boardList')->with('success', '게시글 및 연동된 일정들이 성공적으로 삭제되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }

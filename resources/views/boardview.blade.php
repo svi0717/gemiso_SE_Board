@@ -1,26 +1,28 @@
-
 <style>
     .table a {
         color: black !important;
     }
+
     .card-title-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
     .card-title {
         padding: 10px;
         font-size: 1.25rem;
         margin-bottom: 5px;
     }
+
     .card-header {
-            background-color: #f8f9fa;
-            font-weight: bold;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        background-color: #f8f9fa;
+        font-weight: bold;
+        padding: 10px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 <link href="{{ asset('css/custom-buttons.css') }}" rel="stylesheet">
 @extends('layouts.header')
@@ -29,7 +31,7 @@
 
 @section('content')
     <div class="container mt-5">
-        <div class="row">
+        <div class="row mb-4">
             <div class="col-12 centered-form">
                 <div class="card">
                     <div class="card-header">
@@ -58,7 +60,7 @@
                             <p>첨부 파일이 없습니다.</p>
                         @endif
                     </div>
-                    
+
                     <div class="card-footer text-right">
                         <a href="/boardList" class="btn-custom">목록</a>
                         @if ($userId == $post->user_id)
@@ -102,7 +104,8 @@
                                         <tr class="schedule-row">
                                             <td>{{ $loop->iteration }}</td>
                                             <td class="text-truncate" style="max-width: 250px;">
-                                                <a href="{{ route('schedules.show', $item->sch_id) }}?previous_url={{ urlencode(route('schedule')) }}">{{ $item->title }}</a>
+                                                <a
+                                                    href="{{ route('schedules.show', $item->sch_id) }}?previous_url={{ urlencode(route('schedule')) }}">{{ $item->title }}</a>
                                             </td>
                                             <td>{{ $post->user_name }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item->reg_date)->format('Y-m-d') }}</td>
@@ -115,7 +118,6 @@
                             <div class="d-flex justify-content-center">
                                 <button id="loadMoreBtn" class="btn btn-primary mt-2" style="display: none;">더보기</button>
                             </div>
-
                         @endif
                     </div>
                 </div>
@@ -150,7 +152,6 @@
             // 버튼 숨기기
             loadMoreBtn.style.display = 'none';
         });
-
 
         // 현재 날짜 표시
         const date = new Date();
