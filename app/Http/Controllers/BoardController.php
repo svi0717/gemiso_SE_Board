@@ -105,7 +105,7 @@ class BoardController extends Controller
             'post' => $post,
             'userId' => $userId,
             'schedules' => $schedules,
-            'files' => $files, 
+            'files' => $files,
             'type' => 'board'
         ]);
     } catch (\Exception $e) {
@@ -154,15 +154,26 @@ class BoardController extends Controller
     public function deleteBoard($id)
     {
         try {
-            // 게시글을 ID를 사용하여 삭제
-            DB::table('gemiso_se.board')
-            ->where('board_id', $id)
-            ->update([
-                'delete_yn' => 'Y',
-                'deleted_at' => now()
-            ]);
+            // 트랜잭션 시작
+            DB::beginTransaction();
 
-            return redirect()->route('boardList')->with('success', '게시글이 성공적으로 삭제되었습니다.');
+            // 게시글을 ID를 사용하여 삭제 (delete_yn 업데이트)
+            DB::table('gemiso_se.board')
+                ->where('board_id', $id)
+                ->update([
+                    'delete_yn' => 'Y',
+                    'deleted_at' => now()
+                ]);
+
+            // 연관된 일정들도 delete_yn을 Y로 업데이트
+            DB::table('gemiso_se.schedule')  // 일정 테이블명으로 변경 필요
+                ->where('board_id', $id)  // 일정과 게시글을 연결하는 외래 키 필드명으로 변경 필요
+                ->update([
+                    'delete_yn' => 'Y',
+                    'deleted_at' => now()
+                ]);
+
+            return redirect()->route('boardList')->with('success', '게시글 및 연동된 일정들이 성공적으로 삭제되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -172,7 +183,7 @@ class BoardController extends Controller
     {
         try {
             $user_id = Auth::user()->user_id;
-    
+
             // 요청 데이터 검증
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
@@ -180,7 +191,7 @@ class BoardController extends Controller
                 'user_id' => 'required|string',
                 'files.*' => 'nullable|file|mimes:jpg,png,pdf,docx,doc|max:2048',
             ]);
-    
+
             // 게시글 저장
             $boardId = DB::table('gemiso_se.board')->insertGetId([
                 'title' => $validated['title'],
@@ -190,30 +201,44 @@ class BoardController extends Controller
                 'upd_date' => now()->toDateString(),
                 'views' => 0,
                 'delete_yn' => 'N',
-            ], 'board_id'); // 여기서 'board_id'를 사용합니다.
+            ], 'board_id');
 
             // 파일 저장
+            $filePaths = [];
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
-                    if ($file) { // 파일이 실제로 있는지 확인
-                        $filePath = $file->store('files', 'public'); // 'public/files' 디렉토리에 저장
-                        DB::table('gemiso_se.files')->insert([
-                            'file_name' => $file->getClientOriginalName(),
-                            'file_path' => $filePath,
-                            'file_size' => $file->getSize(),
-                            'file_type' => $file->getClientMimeType(),
-                            'board_id' => $boardId,
-                        ]);
+                    if ($file->isValid()) { // 유효성 검사
+                        $fileName = time() . '_' . $file->getClientOriginalName();
+                        $uploadPath = 'C:/upload';
+
+                        // 업로드 폴더가 존재하는지 확인, 없으면 생성
+                        if (!file_exists($uploadPath)) {
+                            mkdir($uploadPath, 0777, true);
+                        }
+
+                        $filePath = $uploadPath . '/' . $fileName;
+                        $file->move($uploadPath, $fileName);
+
+                        // 파일이 성공적으로 이동했는지 확인
+                        if (file_exists($filePath)) {
+                            $filePaths[] = $filePath;
+                            DB::table('gemiso_se.files')->insert([
+                                'file_name' => $file->getClientOriginalName(),
+                                'file_path' => $filePath,
+                                'file_size' => filesize($filePath), // 파일의 크기 직접 확인
+                                'file_type' => $file->getClientMimeType(),
+                                'board_id' => $boardId,
+                            ]);
+                        }
                     }
                 }
             }
-    
+
             return redirect()->route('boardList')->with('success', '게시글이 성공적으로 등록되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-    
 
     public function downloadFile($id)
     {
@@ -224,9 +249,16 @@ class BoardController extends Controller
                 return redirect()->back()->with('error', '파일을 찾을 수 없습니다.');
             }
 
-            return response()->download(storage_path('app/' . $file->file_path), $file->file_name);
+            // 파일 경로 설정
+            $filePath = $file->file_path; // 데이터베이스에서 저장된 파일 경로 사용
+            if (!file_exists($filePath)) {
+                return redirect()->back()->with('error', '파일이 존재하지 않습니다.');
+            }
+
+            return response()->download($filePath, $file->file_name);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', '파일 다운로드 중 오류가 발생했습니다.');
         }
     }
-    }
+
+}

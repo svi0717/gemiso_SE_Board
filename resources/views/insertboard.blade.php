@@ -19,13 +19,9 @@
             <div class="col-12 centered-form">
                 <h3 class="text-center" id="formTitle">게시판 등록</h3>
                 <p>작성자: {{ Auth::user()->name }}</p>
-                
+
                 <form action="{{ route('boards.insert') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <div class="mb-3">
-                        <label for="formFileMultiple" class="form-label">파일 등록</label>
-                        <input class="form-control" type="file" id="formFileMultiple" name="files[]" multiple>
-                    </div>
                     <div class="mb-3">
                         <label for="title" class="form-label">제목</label>
                         <input type="text" class="form-control" id="title" name="title" placeholder="제목" required>
@@ -35,10 +31,15 @@
                         <!-- Summernote 에디터를 사용하는 textarea -->
                         <textarea id="summernote" name="content" class="form-control" rows="10" required></textarea>
                     </div>
+                    <div class="mb-3">
+                        <label for="formFileMultiple" class="form-label" >파일 등록</label>
+                        <input class="form-control" type="file" id="formFileMultiple" name="files[]" multiple>
+                    </div>
                     <!-- 사용자 ID를 hidden input으로 전달 -->
                     <input type="hidden" name="user_id" value="{{ $userId }}">
                     <div class="text-right">
                         <button type="submit" class="btn-custom">등록</button>
+                        <!-- <button type="button" class="btn-custom" >등록</button> -->
                     </div>
                 </form>
             </div>
