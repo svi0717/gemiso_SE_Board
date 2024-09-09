@@ -59,6 +59,14 @@
                     var url = '/schedule/' + scheduleId; // 상세 페이지 URL 생성
                     window.location.href = url; // 해당 URL로 리디렉션
                },
+                // 이벤트 이동 후 날짜 업데이트
+                eventDrop: function (info) {
+                    updateEventDate(info.event);
+                },
+                // 이벤트 크기 조정 후 날짜 업데이트
+                eventResize: function (info) {
+                    updateEventDate(info.event);
+                },
                 dayMaxEvents: true, // allow "more" link when too many events
                 events: [
                     @foreach ($schedule as $item)
@@ -72,6 +80,41 @@
                 ]
             });
             calendar.render();
+            function updateEventDate(event) {
+            var eventData = {
+                id: event.id,
+                start_date: event.startStr,
+                end_date: event.endStr
+            };
+
+            // end 날짜에서 하루 빼기
+            if (eventData.end_date) {
+                var endDate = new Date(eventData.end_date);
+                endDate.setDate(endDate.getDate() - 1);
+                eventData.end_date = endDate.toISOString().split('T')[0];
+            }
+
+            fetch('/update-event', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify(eventData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('성공', data.message, 'success');
+                } else {
+                    Swal.fire('오류', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                Swal.fire('오류', '일정 업데이트 중 오류가 발생했습니다.', 'error');
+                console.error('Error:', error);
+            });
+            }
         });
     </script>
 </head>

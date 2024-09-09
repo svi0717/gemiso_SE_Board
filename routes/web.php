@@ -107,3 +107,4 @@ Route::delete('/schedule/{sch_id}', [ScheduleController::class, 'deleteSchedule'
 Route::get('/check-login-status', function () {
     return response()->json(['loggedIn' => Auth::check()]);
 });
+Route::post('/update-event', [ScheduleController::class, 'updateEvent'])->name('updateEvent');

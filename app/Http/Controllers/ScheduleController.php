@@ -296,4 +296,27 @@ class ScheduleController extends Controller
         }
     }
 
+    public function updateEvent(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'id' => 'required|integer',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date'
+            ]);
+
+            // 일정 업데이트
+            DB::table('gemiso_se.schedule')
+                ->where('sch_id', $validatedData['id'])
+                ->update([
+                    'start_date' => $validatedData['start_date'],
+                    'end_date' => $validatedData['end_date'],
+                ]);
+
+            return response()->json(['success' => true, 'message' => '일정이 업데이트되었습니다.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
 }
