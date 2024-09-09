@@ -178,7 +178,6 @@ class BoardController extends Controller
             return response()->json(['error' => $e->getMessage()]);
         }
     }
-
     public function insertBoard(Request $request)
     {
         try {
@@ -260,5 +259,4 @@ class BoardController extends Controller
             return redirect()->back()->with('error', '파일 다운로드 중 오류가 발생했습니다.');
         }
     }
-
 }
