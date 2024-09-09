@@ -105,7 +105,7 @@ class BoardController extends Controller
             'post' => $post,
             'userId' => $userId,
             'schedules' => $schedules,
-            'files' => $files, 
+            'files' => $files,
             'type' => 'board'
         ]);
     } catch (\Exception $e) {
