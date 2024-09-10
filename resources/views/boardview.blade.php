@@ -53,6 +53,16 @@
         border-bottom: 1px solid #ddd;
         padding: 10px 0;
     }
+
+    .reply-form {
+        display: none;
+        margin-top: 10px;
+    }
+
+    .reply-list {
+        list-style: none;
+        padding-left: 20px;
+    }
 </style>
 <body>
 
@@ -107,18 +117,55 @@
                             </form>
                             <div class="card-body">
                                 @if ($comments->isEmpty())
-                                  <p class="no-comments">댓글이 없습니다.</p>
+                                    <p class="no-comments">댓글이 없습니다.</p>
                                 @endif
                                 <ul class="comment-list">
                                     @foreach ($comments as $comment)
-                                        <li class="mb-3">
+                                    <li data-comment-id="{{ $comment->c_id }}">
+                                        <div>
                                             <strong>{{ $post->user_name }}</strong>
                                             <p>{{ $comment->content }}</p>
                                             <small class="text-muted">{{ $comment->reg_date }}</small>
-                                        </li>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <!-- 왼쪽 버튼들 -->
+                                            <div class="d-flex">
+                                                <button class="btn-custom btn-reply mt-2" data-comment-id="{{ $comment->c_id }}">답글</button>
+                                            </div>
+                                            <!-- 오른쪽 버튼들 -->
+                                            <div class="d-flex">
+                                                <button class="btn btn-secondary mt-2 mr-1">수정</button>
+                                                <button class="btn btn-danger mt-2 ms-2">삭제</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- 답글 목록 표시 -->
+                                        <ul class="reply-list" data-comment-id="{{ (int)$comment->c_id }}" style="display: none;">
+                                            @foreach ($replies->where('parent_id', $comment->c_id) as $reply)
+                                                <li>
+                                                    <strong>{{ $post->user_name }}</strong>
+                                                    <p>{{ $reply->content }}</p>
+                                                    <small class="text-muted">{{ $reply->reg_date }}</small>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+
+                                        <!-- 답글 폼 -->
+                                        <div class="reply-form" style="display: none;">
+                                            <form class="reply-form-content">
+                                                @csrf
+                                                <input type="hidden" name="parent_id" value="{{ (int)$comment->c_id }}">
+                                                <textarea name="content" class="form-control mt-2" style="width: 90%;" rows="2" required></textarea>
+                                                <div class="w-100 d-flex justify-content-end mt-2" style="max-width: 90%;">
+                                                    <button type="submit" class="btn btn-primary">답글 등록</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </li>
                                     @endforeach
                                 </ul>
                             </div>
+
                         </div>
                         <div class="card-footer text-right">
                             <a href="/boardList" class="btn-custom">목록</a>
@@ -185,77 +232,127 @@
         </div>
         <script>
             $(document).ready(function() {
-                // 댓글 폼 제출 이벤트 처리
-                $('#comment-form').on('submit', function(e) {
-                    e.preventDefault(); // 기본 폼 제출 막기
+            // 댓글 폼 제출 이벤트 처리
+            $('#comment-form').on('submit', function(e) {
+                e.preventDefault(); // 기본 폼 제출 막기
 
-                    $.ajax({
-                        url: '{{ route("comment.insert") }}',  // 댓글 삽입 라우트
-                        type: 'POST',
-                        data: $(this).serialize(),
-                        success: function(response) {
-                            const newComment = `
-                                <li>
+                $.ajax({
+                    url: '{{ route("comment.insert") }}',  // 댓글 삽입 라우트
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        const newComment = `
+                            <li data-comment-id="${response.comment_id}">
+                                <div>
                                     <strong>${response.user_name}</strong>
                                     <p>${response.content}</p>
-                                    <small class="text-muted">(${response.reg_date})</small>
+                                    <small class="text-muted">${response.reg_date}</small>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <!-- 왼쪽 버튼들 -->
+                                    <div class="d-flex">
+                                        <button class="btn-custom btn-reply mt-2" data-comment-id="${response.comment_id}">답글</button>
+                                    </div>
+                                    <!-- 오른쪽 버튼들 -->
+                                    <div class="d-flex">
+                                        <button class="btn btn-secondary mt-2 mr-1">수정</button>
+                                        <button class="btn btn-danger mt-2 ms-2">삭제</button>
+                                    </div>
+                                </div>
+                                <!-- 답글 목록 표시 -->
+                                <ul class="reply-list"></ul>
+                                <!-- 답글 폼 -->
+                                <div class="reply-form">
+                                    <form class="reply-form-content">
+                                        @csrf
+                                        <input type="hidden" name="parent_id" value="${response.comment_id}">
+                                        <textarea name="content" class="form-control mt-2" style="width: 90%;" rows="2" required></textarea>
+                                        <div class="w-100 d-flex justify-content-end mt-2" style="max-width: 90%;">
+                                            <button type="submit" class="btn btn-primary">답글 등록</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                        `;
+
+                        if ($('.comment-list').children().length === 0) {
+                            $('.no-comments').remove();
+                        }
+
+                        $('.comment-list').append(newComment);
+                        $('#content').val('');
+                    },
+                    error: function(xhr) {
+                        alert('댓글 등록 중 문제가 발생했습니다.');
+                    }
+                });
+            });
+
+            // 답글 버튼 클릭 이벤트 처리
+            $(document).on('click', '.btn-reply', function() {
+                const commentId = $(this).data('comment-id');
+                const parentLi = $(this).closest('li');
+                const replyList = parentLi.find('.reply-list');
+                const replyForm = parentLi.find('.reply-form');
+
+                // 답글 목록과 답글 폼 토글
+                if (replyList.is(':visible') && replyForm.is(':visible')) {
+                    replyList.hide();
+                    replyForm.hide();
+                } else {
+                    replyList.toggle();
+                    replyForm.toggle();
+                }
+            });
+
+            // 답글 폼 제출 이벤트 처리
+            $(document).on('submit', '.reply-form-content', function(e) {
+                e.preventDefault(); // 기본 폼 제출 막기
+
+                const form = $(this);
+                const formData = form.serializeArray();
+
+                // 폼 데이터와 함께 parent_id 출력 확인
+                console.log('Form Data:', formData);
+
+                $.ajax({
+                    url: '{{ route("comment.insert") }}',  // 답글 삽입 라우트
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            const parentLi = form.closest('li');
+                            const replyList = parentLi.find('.reply-list');
+
+                            const newReply = `
+                                <li>
+                                    <div>
+                                        <strong>${response.user_name}</strong>
+                                        <p>${response.content}</p>
+                                        <small class="text-muted">${response.reg_date}</small>
+                                    </div>
                                 </li>
                             `;
 
-                            // 댓글 목록이 비어 있는 경우 메시지 제거 후 댓글 추가
-                            if ($('.comment-list').children().length === 0) {
-                                $('.no-comments').remove(); // 댓글이 추가되면 메시지 제거
+                            if (replyList.is(':hidden')) {
+                                replyList.show();
                             }
-                            // 새 댓글을 댓글 리스트에 추가
-                            $('.comment-list').append(newComment);
 
-                            // 댓글 작성 폼 초기화
-                            $('#content').val('');
-                        },
-                        error: function(xhr) {
-                            // 에러 발생 시 처리
-                            alert('댓글 등록 중 문제가 발생했습니다.');
+                            replyList.append(newReply);
+                            form[0].reset();
+                        } else {
+                            alert('답글 등록 중 문제가 발생했습니다: ' + response.message);
                         }
-                    });
-                });
-
-                // 더보기 버튼과 현재 날짜 관련 코드
-                const scheduleRows = document.querySelectorAll('.schedule-row');
-                const loadMoreBtn = document.getElementById('loadMoreBtn');
-                const maxrow = 4; // 처음에 표시할 행 수
-
-                // 초기 표시 설정
-                scheduleRows.forEach((row, index) => {
-                    if (index >= maxrow) {
-                        row.style.display = 'none';
+                    },
+                    error: function(xhr) {
+                        const errorMessage = xhr.responseJSON?.message || '알 수 없는 오류가 발생했습니다.';
+                        alert('답글 등록 중 문제가 발생했습니다: ' + errorMessage);
+                        console.log('error', xhr.responseJSON);
                     }
                 });
-
-                // 더보기 버튼이 필요할 때만 표시
-                if (scheduleRows.length > maxrow) {
-                    loadMoreBtn.style.display = 'block';
-                }
-
-                // 더보기 버튼 클릭 시
-                loadMoreBtn.addEventListener('click', () => {
-                    // 모든 행을 표시
-                    scheduleRows.forEach((row) => {
-                        row.style.display = '';
-                    });
-
-                    // 버튼 숨기기
-                    loadMoreBtn.style.display = 'none';
-                });
-
-                // 현재 날짜 표시
-                const date = new Date();
-                const year = date.getFullYear();
-                const month = ('0' + (date.getMonth() + 1)).slice(-2);
-                const day = ('0' + date.getDate()).slice(-2);
-                document.getElementById("current_date").innerHTML = year + "-" + month + "-" + day;
             });
+        });
         </script>
     @endsection
-
 </body>
 </html>
