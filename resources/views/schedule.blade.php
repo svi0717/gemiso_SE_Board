@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
+    <title>일정관리</title>
     <meta charset='utf-8' />
     <style>
         #calendar {
