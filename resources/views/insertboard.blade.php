@@ -1,4 +1,13 @@
-@extends('layouts.header')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>게시판 등록</title>
+</head>
+<body>
+    @extends('layouts.header')
 
 @section('title', '게시판 등록')
 
@@ -78,3 +87,7 @@
     });
     </script>
 @endsection
+
+</body>
+</html>
+

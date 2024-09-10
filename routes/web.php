@@ -29,6 +29,7 @@ Route::post('/register', [UserController::class, 'register'])->name('register');
 Route::view('/findId', 'findId');
 Route::post('/find-id', [UserController::class, 'findId'])->name('findId');
 Route::view('/findIdCompleted', 'findIdCompleted')->name('findIdCompleted');
+Route::view('/findPassword', 'findPassword');
 Route::post('/find-Password', [UserController::class, 'findPassword'])->name('findPassword');
 Route::post('/password/update', [UserController::class, 'updatePassword'])->name('updatePassword');
 Route::view('/findPasswordCompleted', 'findPasswordCompleted')->name('findPasswordCompleted');
@@ -108,3 +109,7 @@ Route::get('/check-login-status', function () {
     return response()->json(['loggedIn' => Auth::check()]);
 });
 Route::post('/update-event', [ScheduleController::class, 'updateEvent'])->name('updateEvent');
+
+// 댓글 부분 라우트
+Route::post('/insertcomment', [BoardController::class, 'Insertcomment'])->name('comment.insert');
+

@@ -6,7 +6,7 @@
     <title>헤더와 사이드바 예제</title>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="{{ asset('js/buttons.js') }}" defer></script>
 
     <style>

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -11,12 +12,12 @@ class BoardController extends Controller
     {
         try {
             $query = DB::table('gemiso_se.board')
-            ->leftjoin('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
-            ->select(
-                'gemiso_se.board.*',
-                'gemiso_se.user.name as user_name',
-            )
-            ->where('gemiso_se.board.delete_yn', '=', 'N');
+                ->leftjoin('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
+                ->select(
+                    'gemiso_se.board.*',
+                    'gemiso_se.user.name as user_name',
+                )
+                ->where('gemiso_se.board.delete_yn', '=', 'N');
 
             // 날짜 필터링
             if ($request->has('start_date') && $request->has('end_date') && $request->input('start_date') && $request->input('end_date')) {
@@ -69,11 +70,9 @@ class BoardController extends Controller
     }
 
     public function showBoard($id)
-
     {
         try {
             $userId = Auth::user()->user_id;
-
 
             // 게시물 데이터 가져오기
             $post = DB::table('gemiso_se.board')
@@ -89,37 +88,44 @@ class BoardController extends Controller
             // 조회수 증가
             DB::table('gemiso_se.board')->where('board_id', $id)->increment('views');
 
+            // 게시물과 연관된 일정 데이터 가져오기
+            $schedules = DB::table('gemiso_se.schedule')
+                ->where('board_id', $id)
+                ->get();
 
-        // 게시물과 연관된 일정 데이터 가져오기
-        $schedules = DB::table('gemiso_se.schedule')
-            ->where('board_id', $id)
-            ->get();
+            // 게시물과 연관된 파일 데이터 가져오기
+            $files = DB::table('gemiso_se.files')
+                ->where('board_id', $id)
+                ->get();
 
-        // 게시물과 연관된 파일 데이터 가져오기
-        $files = DB::table('gemiso_se.files')
-        ->where('board_id', $id)
-        ->get();
+            // 게시물과 연관된 댓글 데이터 가져오기
+            $comments = DB::table('gemiso_se.comments')
+                ->where('board_id', $id)
+                ->get();
 
-        // 뷰로 데이터 전달
-        return view('boardview', [
-            'post' => $post,
-            'userId' => $userId,
-            'schedules' => $schedules,
-            'files' => $files,
-            'type' => 'board'
-        ]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
+            // 뷰로 데이터 전달
+            return view('boardview', [
+                'post' => $post,
+                'userId' => $userId,
+                'schedules' => $schedules,
+                'files' => $files,
+                'type' => 'board',
+                'comments' => $comments,
+                'board_id' => $id
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
     }
-    }
+
 
     public function edit($id)
     {
         // 수정할 게시글 데이터 가져오기
         $post = DB::table('gemiso_se.board')
-        ->leftJoin('gemiso_se.user', 'gemiso_se.user.user_id', '=', 'gemiso_se.board.user_id')
-        ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name')
-        ->where('gemiso_se.board.board_id', $id)->first();
+            ->leftJoin('gemiso_se.user', 'gemiso_se.user.user_id', '=', 'gemiso_se.board.user_id')
+            ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name')
+            ->where('gemiso_se.board.board_id', $id)->first();
 
         // 수정 페이지로 이동
         return view('editboard', ['post' => $post, 'type' => 'board']);
@@ -145,7 +151,6 @@ class BoardController extends Controller
 
             // 플래시 메시지 설정 후 게시판 목록으로 리다이렉트
             return redirect()->route('boardList')->with('success', '수정이 완료되었습니다.');
-
         } catch (\Exception $e) {
             return back()->with('error', '수정 중 오류가 발생했습니다.');
         }
@@ -257,4 +262,39 @@ class BoardController extends Controller
             return redirect()->back()->with('error', '파일 다운로드 중 오류가 발생했습니다.');
         }
     }
+
+    public function Insertcomment(Request $request)
+    {
+        $user_id = Auth::user()->user_id;
+
+        // 요청 데이터 검증
+        $validated = $request->validate([
+            'content' => 'required|string',
+            'board_id' => 'nullable|integer'
+        ]);
+
+        $board_id = $validated['board_id'] ?? null;
+
+        // 댓글 데이터 삽입
+        $commentId = DB::table('gemiso_se.comments')->insertGetId([
+            'user_id' => $user_id,
+            'content' => $validated['content'],
+            'reg_date' => now()->format('Y-m-d H:i:s'),
+            'delete_yn' => 'N',
+            'board_id' => $board_id,
+        ], 'c_id');  // 'c_id'를 사용하여 실제 칼럼 이름을 명시
+
+        // 삽입된 댓글을 조회하여 Ajax 응답으로 반환
+        $comment = DB::table('gemiso_se.comments')
+            ->where('c_id', $commentId)
+            ->first();
+
+        return response()->json([
+            'status' => 'success',
+            'content' => $comment->content,
+            'user_name' => Auth::user()->name,
+            'reg_date' => $comment->reg_date
+        ]);
+    }
+
 }
