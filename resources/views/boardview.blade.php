@@ -162,7 +162,7 @@
                                                                 <p>{{ $reply->content }}</p>
                                                                 <small class="text-muted">{{ \Carbon\Carbon::parse($reply->reg_date)->format('Y-m-d') }}</small>
                                                             </div>
-                                                            @if ($userId == $comment->user_id)
+                                                            @if ($userId == $reply->user_id)
                                                             <button class="btn btn-danger mt-5 btn-delete" data-comment-id="{{ $comment->c_id }}">삭제</button>
                                                             @endif
                                                         </div>
