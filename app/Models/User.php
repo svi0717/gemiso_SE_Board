@@ -11,7 +11,7 @@ class User extends Model implements Authenticatable
 {
     use HasFactory, AuthenticableTrait;
 
-    protected $table = 'gemiso_se.user';
+    protected $table = "gemiso_se.users";
 
     protected $fillable = [
         'user_id',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -91,11 +92,13 @@ class BoardController extends Controller
             // 게시물과 연관된 일정 데이터 가져오기
             $schedules = DB::table('gemiso_se.schedule')
                 ->where('board_id', $id)
+                ->where('gemiso_se.schedule.delete_yn', '=', 'N')
                 ->get();
 
             // 게시물과 연관된 파일 데이터 가져오기
             $files = DB::table('gemiso_se.files')
                 ->where('board_id', $id)
+                ->where('gemiso_se.files.delete_yn', '=', 'N')
                 ->get();
 
             // 게시물과 연관된 댓글 데이터 가져오기
@@ -122,7 +125,7 @@ class BoardController extends Controller
                 'type' => 'board',
                 'comments' => $comments,
                 'replies' => $replies,
-                'board_id' => $id
+                'board_id' => $id,
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
@@ -161,7 +164,7 @@ class BoardController extends Controller
                 ]);
 
             // 플래시 메시지 설정 후 게시판 목록으로 리다이렉트
-            return redirect()->route('boardList')->with('success', '수정이 완료되었습니다.');
+            return redirect()->route('boards.show', ['id' => $id])->with('success', '수정이 완료되었습니다.');
         } catch (\Exception $e) {
             return back()->with('error', '수정 중 오류가 발생했습니다.');
         }
@@ -189,6 +192,13 @@ class BoardController extends Controller
 
             DB::table('gemiso_se.comments')  // 댓글 테이블명으로 변경 필요
             ->where('board_id', $id)  // 댓글과 게시글을 연결하는 외래 키 필드명으로 변경 필요
+            ->update([
+                'delete_yn' => 'Y',
+                'deleted_at' => now()
+            ]);
+
+            DB::table('gemiso_se.files')
+            ->where('board_id', $id)
             ->update([
                 'delete_yn' => 'Y',
                 'deleted_at' => now()
@@ -249,6 +259,7 @@ class BoardController extends Controller
                                 'file_size' => filesize($filePath), // 파일의 크기 직접 확인
                                 'file_type' => $file->getClientMimeType(),
                                 'board_id' => $boardId,
+                                'delete_yn' => 'N'
                             ]);
                         }
                     }
@@ -326,7 +337,7 @@ class BoardController extends Controller
                 'comment_id' => $comment->c_id,
                 'content' => $comment->content,
                 'user_name' => $user->name,
-                'reg_date' => $comment->reg_date
+                'reg_date' => Carbon::parse($comment->reg_date)->format('Y-m-d'),
             ]);
 
         } catch (\Exception $e) {
@@ -386,7 +397,11 @@ class BoardController extends Controller
             }
 
             // 댓글 삭제 (soft delete를 고려하여 delete_yn 필드로 처리)
-            DB::table('gemiso_se.comments')->where('c_id', $id)->update(['delete_yn' => 'Y']);
+            DB::table('gemiso_se.comments')->where('c_id', $id)
+            ->update([
+                'delete_yn' => 'Y',
+                'deleted_at' => now()
+            ]);
 
             return response()->json([
                 'status' => 'success',
