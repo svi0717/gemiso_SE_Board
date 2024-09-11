@@ -373,9 +373,6 @@ class BoardController extends Controller
             ], 500);
         }
     }
-
-    }
-
     public function deleteComments($id)
     {
         try {
@@ -403,4 +400,9 @@ class BoardController extends Controller
             ], 500);
         }
     }
+
 }
+
+
+
+

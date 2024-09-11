@@ -135,7 +135,7 @@
                                                 <!-- 오른쪽 버튼들 -->
                                                 <div class="d-flex">
                                                     <button class="btn btn-secondary mt-2 btn-edit" data-comment-id="{{ $comment->c_id }}">수정</button>
-                                                    <button class="btn btn-danger mt-2 ms-2 btn-delete" data-comment-id="{{ $comment->c_id }}">삭제</button>
+                                                    <button class="btn btn-danger mt-2 ms-2 btn-delete ml-1" data-comment-id="{{ $comment->c_id }}">삭제</button>
                                                 </div>
                                             </div>
                                             <!-- 수정 폼 -->
@@ -300,17 +300,16 @@
                         </div>
                     </li>
                 `;
-                // 댓글을 추가하기 전에 기존 댓글들을 내림차순으로 정렬하고 추가
-                const commentList = $('.comment-list');
-                commentList.prepend(newComment); // 새 댓글을 가장 위에 추가
-                $('#content').val(''); // 댓글 입력 필드 초기화
+
 
                 if ($('.comment-list').children().length === 0) {
                     $('.no-comments').remove();
                 }
+                  // 댓글을 추가하기 전에 기존 댓글들을 내림차순으로 정렬하고 추가
+                  const commentList = $('.comment-list');
+                commentList.prepend(newComment); // 새 댓글을 가장 위에 추가
+                $('#content').val(''); // 댓글 입력 필드 초기화
 
-                $('.comment-list').append(newComment);
-                $('#content').val('');
             },
                 error: function(xhr) {
                     alert('댓글 등록 중 문제가 발생했습니다.');
@@ -452,7 +451,7 @@
                 }
             });
         });
-        
+
           // 댓글 삭제 버튼 클릭 이벤트 처리
             $(document).on('click', '.btn-delete', function() {
             const commentId = $(this).closest('li').data('comment-id'); // 삭제할 댓글의 ID
