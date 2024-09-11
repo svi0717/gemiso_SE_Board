@@ -13,10 +13,10 @@ class BoardController extends Controller
     {
         try {
             $query = DB::table('gemiso_se.board')
-                ->leftjoin('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
+                ->leftjoin('gemiso_se.users', 'gemiso_se.board.user_id', '=', 'gemiso_se.users.user_id')
                 ->select(
                     'gemiso_se.board.*',
-                    'gemiso_se.user.name as user_name',
+                    'gemiso_se.users.name as user_name',
                 )
                 ->where('gemiso_se.board.delete_yn', '=', 'N');
 
@@ -57,7 +57,7 @@ class BoardController extends Controller
         try {
             // 사용자 정보를 조회
             $user_id = Auth::user()->user_id;
-            $user = DB::table('gemiso_se.user')->where('user_id', $user_id)->first();
+            $user = DB::table('gemiso_se.users')->where('user_id', $user_id)->first();
 
             if (!$user) {
                 return redirect()->route('boardList')->with('error', '사용자 정보를 찾을 수 없습니다.');
@@ -77,8 +77,8 @@ class BoardController extends Controller
 
             // 게시물 데이터 가져오기
             $post = DB::table('gemiso_se.board')
-                ->leftJoin('gemiso_se.user', 'gemiso_se.board.user_id', '=', 'gemiso_se.user.user_id')
-                ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name')
+                ->leftJoin('gemiso_se.users', 'gemiso_se.board.user_id', '=', 'gemiso_se.users.user_id')
+                ->select('gemiso_se.board.*', 'gemiso_se.users.name as user_name')
                 ->where('gemiso_se.board.board_id', $id)
                 ->first();
 
@@ -137,8 +137,8 @@ class BoardController extends Controller
     {
         // 수정할 게시글 데이터 가져오기
         $post = DB::table('gemiso_se.board')
-            ->leftJoin('gemiso_se.user', 'gemiso_se.user.user_id', '=', 'gemiso_se.board.user_id')
-            ->select('gemiso_se.board.*', 'gemiso_se.user.name as user_name')
+            ->leftJoin('gemiso_se.users', 'gemiso_se.users.user_id', '=', 'gemiso_se.board.user_id')
+            ->select('gemiso_se.board.*', 'gemiso_se.users.name as user_name')
             ->where('gemiso_se.board.board_id', $id)->first();
 
         // 수정 페이지로 이동
