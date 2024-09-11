@@ -38,15 +38,18 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|unique:gemiso_se.users',
             'password' => 'required|min:8|confirmed',
+            'password_confirmation' => 'required_with:password|same:password',
             'name' => 'required|string|max:255',
             'department' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
+            'phone' => 'required|string|regex:/^[0-9]{11,12}$/',
         ], [
             'user_id.required' => '아이디는 필수입니다.',
             'user_id.unique' => '이 아이디는 이미 사용 중입니다.',
             'password.required' => '비밀번호는 필수입니다.',
             'password.min' => '비밀번호는 최소 8자 이상이어야 합니다.',
             'password.confirmed' => '비밀번호 확인이 일치하지 않습니다.',
+            'password_confirmation.required_with' => '비밀번호 확인은 비밀번호와 함께 입력되어야 합니다.',
+            'password_confirmation.same' => '비밀번호 확인이 비밀번호와 일치하지 않습니다.',
             'name.required' => '이름은 필수입니다.',
             'name.string' => '이름은 문자열이어야 합니다.',
             'name.max' => '이름은 최대 255자까지 입력할 수 있습니다.',
@@ -55,7 +58,7 @@ class UserController extends Controller
             'department.max' => '부서명은 최대 255자까지 입력할 수 있습니다.',
             'phone.required' => '전화번호는 필수입니다.',
             'phone.string' => '전화번호는 문자열이어야 합니다.',
-            'phone.max' => '전화번호는 최대 15자까지 입력할 수 있습니다.',
+            'phone.regex' => '전화번호는 숫자만 포함되며 11자리 또는 12자리여야 합니다.',
         ]);
 
         // 유효성 검사 실패 시, 이전 입력값과 에러 메시지를 포함하여 다시 폼으로 리디렉션
