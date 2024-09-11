@@ -13,11 +13,11 @@ class ScheduleController extends Controller
     {
         try {
             $query = DB::table('gemiso_se.schedule')
-            ->leftjoin('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
+            ->leftjoin('gemiso_se.users', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.users.user_id')
             ->select(
                 'gemiso_se.schedule.*',
                 // 'gemiso_se.schedule.*',
-                'gemiso_se.user.name as user_name',
+                'gemiso_se.users.name as user_name',
             )
             ->where('gemiso_se.schedule.delete_yn', '=', 'N');
 
@@ -66,11 +66,11 @@ class ScheduleController extends Controller
         try {
             // 기본 쿼리 설정
             $query = DB::table('gemiso_se.schedule')
-                ->leftJoin('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
+                ->leftJoin('gemiso_se.users', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.users.user_id')
                 ->leftJoin('gemiso_se.board', 'gemiso_se.schedule.board_id', '=', 'gemiso_se.board.board_id') // 게시판과 조인
                 ->select(
                     'gemiso_se.schedule.*',
-                    'gemiso_se.user.name as user_name',
+                    'gemiso_se.users.name as user_name',
                     'gemiso_se.board.title as board_title' // 게시판 제목
                 )
                 ->where('gemiso_se.schedule.delete_yn', '=', 'N');
@@ -141,7 +141,7 @@ class ScheduleController extends Controller
 
             $post = DB::table('gemiso_se.schedule')
                 ->leftJoin('gemiso_se.board', 'gemiso_se.schedule.board_id', '=', 'gemiso_se.board.board_id')
-                ->leftJoin('gemiso_se.user', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.user.user_id')
+                ->leftJoin('gemiso_se.users', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.users.user_id')
                 ->select(
                     'gemiso_se.schedule.sch_id',
                     'gemiso_se.schedule.title as schedule_title',
@@ -150,7 +150,7 @@ class ScheduleController extends Controller
                     'gemiso_se.schedule.end_date',
                     'gemiso_se.schedule.board_id',
                     'gemiso_se.schedule.user_id as user_id',
-                    'gemiso_se.user.name as user_name'
+                    'gemiso_se.users.name as user_name'
                 )
                 ->where('gemiso_se.schedule.sch_id', $sch_id)
                 ->first();
@@ -181,7 +181,7 @@ class ScheduleController extends Controller
         try {
             // 사용자 정보를 조회
             $user_id = Auth::user()->user_id;
-            $user = DB::table('gemiso_se.user')->where('user_id', $user_id)->first();
+            $user = DB::table('gemiso_se.users')->where('user_id', $user_id)->first();
 
             if (!$user) {
                 return redirect()->route('schedule')->with('error', '사용자 정보를 찾을 수 없습니다.');
@@ -266,8 +266,8 @@ class ScheduleController extends Controller
     {
         // 수정할 게시글 데이터 가져오기
         $post = DB::table('gemiso_se.schedule')
-        ->leftJoin('gemiso_se.user', 'gemiso_se.user.user_id', '=', 'gemiso_se.schedule.user_id')
-        ->select('gemiso_se.schedule.*', 'gemiso_se.user.name as user_name')
+        ->leftJoin('gemiso_se.users', 'gemiso_se.users.user_id', '=', 'gemiso_se.schedule.user_id')
+        ->select('gemiso_se.schedule.*', 'gemiso_se.users.name as user_name')
         ->where('gemiso_se.schedule.sch_id', $sch_id)->first();
 
         // 수정 페이지로 이동
@@ -291,8 +291,7 @@ class ScheduleController extends Controller
                     'content' => $validated['content'],
                 ]);
 
-            // 플래시 메시지 설정 후 게시판 목록으로 리다이렉트
-            return redirect()->route('schedule')->with('success', '수정이 완료되었습니다.');
+            return redirect()->route('schedules.show', ['sch_id' => $sch_id])->with('success', '수정이 완료되었습니다.');
 
         } catch (\Exception $e) {
             return back()->with('error', '수정 중 오류가 발생했습니다.');

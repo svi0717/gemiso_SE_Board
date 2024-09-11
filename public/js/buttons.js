@@ -15,7 +15,7 @@ function createButton(text, url) {
      button.style.transition = 'background-color 0.3s ease';
      button.style.width = '60%';
      button.style.marginBottom = '20px';
- 
+
      // 버튼에 마우스를 올렸을 때 스타일
      button.onmouseover = function() {
          button.style.backgroundColor = '#1E8AC0'; // 호버 시 배경 색상
@@ -29,18 +29,18 @@ function createButton(text, url) {
 function addButtonsToPage() {
     const sidebtn = document.getElementById('sidebar-button');
     const boardbtn = document.getElementById('list-buttons');
-    
+
     const boardButton = createButton('게시판', '/boardList');
     const scheduleButton = createButton('일정관리', '/schedule');
-    const listButton = createButton('목록','/');
-    const editButton = createButton('수정','/editboard');
-    const deleteButton = createButton('삭제','/deleteboard');
+    // const listButton = createButton('목록','/');
+    // const editButton = createButton('수정','/editboard');
+    // const deleteButton = createButton('삭제','/deleteboard');
 
     sidebtn.appendChild(boardButton);
     sidebtn.appendChild(document.createElement('br'));
     sidebtn.appendChild(scheduleButton);
-    
-    boardbtn.appendChild(deleteButton);
-    boardbtn.appendChild(editButton);
-    boardbtn.appendChild(listButton);
+
+    // boardbtn.appendChild(deleteButton);
+    // boardbtn.appendChild(editButton);
+    // boardbtn.appendChild(listButton);
 }

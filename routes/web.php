@@ -105,9 +105,7 @@ Route::delete('/schedule/{sch_id}', [ScheduleController::class, 'deleteSchedule'
     ->middleware(\App\Http\Middleware\CheckAuth::class)
     ->name('schedules.delete');
 
-Route::get('/check-login-status', function () {
-    return response()->json(['loggedIn' => Auth::check()]);
-});
+Route::post('/check-login-status', [UserController::class, 'checkUserId'])->name('checkUserId');
 Route::post('/update-event', [ScheduleController::class, 'updateEvent'])->name('updateEvent');
 
 // 댓글 부분 라우트

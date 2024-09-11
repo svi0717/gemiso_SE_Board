@@ -77,7 +77,7 @@
                         <div class="card-header">
                             게시물 조회
                             <div class="d-flex flex-column align-items-end">
-                                <div class="date-view" id="current_date"></div>
+                                <div class="date-view">{{ $post->reg_date }}</div>
                             </div>
                         </div>
                         <div class="card-title-container">
@@ -110,7 +110,7 @@
                                 <div class="form-group d-flex flex-column align-items-center">
                                     <textarea id="content" name="content" class="form-control mt-2" style="width: 90%;" rows="4" required></textarea>
                                     <div class="w-100 d-flex justify-content-end mt-2" style="max-width: 90%;">
-                                        <button type="submit" class="btn btn-primary">댓글 등록</button>
+                                        <button type="submit" class="btn-custom">등록</button>
                                     </div>
                                 </div>
                             </form>
@@ -124,7 +124,7 @@
                                             <div>
                                                 <strong>{{ $post->user_name }}</strong>
                                                 <p>{{ $comment->content }}</p>
-                                                <small class="text-muted">{{ $comment->reg_date }}</small>
+                                                <small class="text-muted">{{ \Carbon\Carbon::parse($comment->reg_date)->format('Y-m-d');}}</small>
                                             </div>
                                             <div class="d-flex justify-content-between" id="buttonAll">
                                                 <!-- 왼쪽 버튼들 -->
@@ -134,8 +134,10 @@
                                                 </div>
                                                 <!-- 오른쪽 버튼들 -->
                                                 <div class="d-flex">
+                                                    @if ($userId == $comment->user_id)
                                                     <button class="btn btn-secondary mt-2 btn-edit" data-comment-id="{{ $comment->c_id }}">수정</button>
                                                     <button class="btn btn-danger mt-2 ms-2 btn-delete ml-1" data-comment-id="{{ $comment->c_id }}">삭제</button>
+                                                @endif
                                                 </div>
                                             </div>
                                             <!-- 수정 폼 -->
@@ -150,13 +152,18 @@
                                                 </form>
                                             </div>
                                             <!-- 답글 목록 표시 -->
-                                            <ul class="reply-list" data-comment-id="{{ (int) $comment->c_id }}"
+                                            <ul class="reply-list" data-comment-id="{{ $comment->c_id }}"
                                                 style="display: none;">
                                                 @foreach ($replies->where('parent_id', $comment->c_id) as $reply)
-                                                    <li>
-                                                        <strong>{{ $post->user_name }}</strong>
-                                                        <p>{{ $reply->content }}</p>
-                                                        <small class="text-muted">{{ $reply->reg_date }}</small>
+                                                    <li data-comment-id="{{ $comment->c_id }}">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <div>
+                                                                <strong>{{ $post->user_name }}</strong>
+                                                                <p>{{ $reply->content }}</p>
+                                                                <small class="text-muted">{{ \Carbon\Carbon::parse($reply->reg_date)->format('Y-m-d') }}</small>
+                                                            </div>
+                                                            <button class="btn btn-danger mt-5 btn-delete" data-comment-id="{{ $comment->c_id }}">삭제</button>
+                                                        </div>
                                                     </li>
                                                 @endforeach
                                             </ul>
@@ -166,11 +173,11 @@
                                                 <form class="reply-form-content">
                                                     @csrf
                                                     <input type="hidden" name="parent_id"
-                                                        value="{{ (int) $comment->c_id }}">
+                                                        value="{{ $comment->c_id }}">
                                                     <textarea name="content" class="form-control mt-2" style="width: 90%;" rows="2" required></textarea>
                                                     <div class="w-100 d-flex justify-content-end mt-2"
                                                         style="max-width: 90%;">
-                                                        <button type="submit" class="btn btn-primary">답글 등록</button>
+                                                        <button type="submit" class="btn-custom">등록</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -178,7 +185,6 @@
                                     @endforeach
                                 </ul>
                             </div>
-
                         </div>
                         <div class="card-footer text-right">
                             <a href="/boardList" class="btn-custom">목록</a>
@@ -224,8 +230,7 @@
                                             <tr class="schedule-row">
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td class="text-truncate" style="max-width: 250px;">
-                                                    <a
-                                                        href="{{ route('schedules.show', $item->sch_id) }}?previous_url={{ urlencode(route('schedule')) }}">{{ $item->title }}</a>
+                                                    <a href="{{ route('schedules.show', $item->sch_id) }}?previous_url={{ urlencode(route('schedule')) }}">{{ $item->title }}</a>
                                                 </td>
                                                 <td>{{ $post->user_name }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($item->reg_date)->format('Y-m-d') }}</td>
@@ -246,6 +251,7 @@
             </div>
         </div>
         <script>
+
             $(document).ready(function() {
                 // 댓글 폼 제출 이벤트 처리
                 $('#comment-form').on('submit', function(e) {
@@ -283,7 +289,7 @@
                                 <input type="hidden" name="parent_id" value="${response.comment_id}">
                                 <textarea name="content" class="form-control mt-2" style="width: 90%;" rows="2" required></textarea>
                                 <div class="w-100 d-flex justify-content-end mt-2" style="max-width: 90%;">
-                                    <button type="submit" class="btn btn-primary">답글 등록</button>
+                                    <button type="submit" class="btn-custom">등록</button>
                                 </div>
                             </form>
                         </div>
@@ -302,13 +308,14 @@
                 `;
 
 
-                if ($('.comment-list').children().length === 0) {
-                    $('.no-comments').remove();
-                }
-                  // 댓글을 추가하기 전에 기존 댓글들을 내림차순으로 정렬하고 추가
-                  const commentList = $('.comment-list');
-                commentList.prepend(newComment); // 새 댓글을 가장 위에 추가
+                // 댓글을 가장 위에 추가
+                $('.comment-list').prepend(newComment);
+
+                // 댓글 입력 필드 초기화
                 $('#content').val(''); // 댓글 입력 필드 초기화
+
+                // 댓글이 추가된 후 "댓글이 없습니다" 문구 숨기기
+                $('.no-comments').hide();
 
             },
                 error: function(xhr) {
@@ -349,14 +356,20 @@
                                 const replyList = parentLi.find('.reply-list');
 
                                 const newReply = `
-                        <li>
-                            <div>
-                                <strong>${response.user_name}</strong>
-                                <p>${response.content}</p>
-                                <small class="text-muted">${response.reg_date}</small>
+                           <li data-comment-id="${response.comment_id}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>${response.user_name}</strong>
+                                    <p>${response.content}</p>
+                                    <small class="text-muted">${response.reg_date}</small>
+                                </div>
+                                <button class="btn btn-danger btn-delete mt-5" data-comment-id="${response.comment_id}">삭제</button>
                             </div>
                         </li>
                     `;
+
+                    console.log('response', response.id);
+
 
                     if (replyList.is(':hidden')) {
                         replyList.show();
@@ -452,10 +465,10 @@
             });
         });
 
-          // 댓글 삭제 버튼 클릭 이벤트 처리
+            // 댓글 삭제 버튼 클릭 이벤트 처리
             $(document).on('click', '.btn-delete', function() {
             const commentId = $(this).closest('li').data('comment-id'); // 삭제할 댓글의 ID
-            console.log(commentId);  // 삭제될 댓글의 ID를 콘솔에 출력
+            console.log('commentId ::: ', commentId);  // 삭제될 댓글의 ID를 콘솔에 출력
             if (confirm('정말 삭제하시겠습니까?')) {
                 $.ajax({
                     url: `/comment/delete/${commentId}`,  // 댓글 삭제 라우트 URL
@@ -482,7 +495,7 @@
                     error: function(xhr) {
                         const errorMessage = xhr.responseJSON?.message || '알 수 없는 오류가 발생했습니다.';
                         alert('댓글 삭제 중 문제가 발생했습니다: ' + errorMessage);
-                        console.error('AJAX 오류:', xhr);  // 에러 로그 출력
+                        console.error('AJAX 오류:', xhr);
                     }
                 });
             }
