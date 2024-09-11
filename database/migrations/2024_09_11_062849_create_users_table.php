@@ -13,7 +13,7 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('gemiso_se.users', function (Blueprint $table) { // 스키마명 추가
             $table->increments('id');
             $table->string('user_id')->unique();
             $table->string('password');
@@ -35,6 +35,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('gemsio_se.users'); // 스키마명 추가
     }
 }

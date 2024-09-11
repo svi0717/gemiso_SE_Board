@@ -111,7 +111,7 @@ class UserController extends Controller
     {
         $userId = $request->input('user_id');
 
-        $exists = DB::table('gemiso_se.user')->where('user_id', $userId)->exists();
+        $exists = DB::table('gemiso_se.users')->where('user_id', $userId)->exists();
 
         return response()->json(['exists' => $exists]);
     }
@@ -122,7 +122,7 @@ class UserController extends Controller
         $phone = $request->input('phone');
 
         // 데이터베이스에서 아이디 검색
-        $user = DB::table('gemiso_se.user')
+        $user = DB::table('gemiso_se.users')
             ->where('name', $name)
             ->where('phone', $phone)
             ->first();
@@ -150,7 +150,7 @@ class UserController extends Controller
         $phone = $request->input('phone');
 
         // 사용자 검색
-        $user = DB::table('gemiso_se.user')
+        $user = DB::table('gemiso_se.users')
             ->where('user_id', $userId)
             ->where('name', $name)
             ->where('phone', $phone)
@@ -171,7 +171,7 @@ class UserController extends Controller
          $newPassword = $request->input('new_password');
 
          // 비밀번호 업데이트
-         DB::table('gemiso_se.user')
+         DB::table('gemiso_se.users')
              ->where('user_id', $userId)
              ->update(['password' => Hash::make($newPassword)]);
 
