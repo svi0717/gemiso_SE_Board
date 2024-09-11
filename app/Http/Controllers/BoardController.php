@@ -105,8 +105,6 @@ class BoardController extends Controller
                 ->orderBy('reg_date', 'desc')
                 ->get();
 
-            dd($comments->pluck('reg_date'));
-
             $commentIds = $comments->pluck('c_id');
 
             $replies = DB::table('gemiso_se.comments')
@@ -337,6 +335,45 @@ class BoardController extends Controller
                 'message' => '댓글 등록 중 문제가 발생했습니다.'
             ], 500); // 500 Internal Server Error 응답
         }
+    }
+
+    public function updatecomment(Request $request, $id)
+    {
+        try {
+            // 입력 데이터 검증
+            $validatedData = $request->validate([
+                'content' => 'required|string|max:500',
+            ]);
+
+            // 댓글 찾기
+            $comment = DB::table('gemiso_se.comments')->where('c_id', $id)->first();
+
+            if (!$comment) {
+                return response()->json(['status' => 'error', 'message' => '댓글을 찾을 수 없습니다.'], 404);
+            }
+
+            // 댓글 업데이트
+            DB::table('gemiso_se.comments')
+                ->where('c_id', $id)
+                ->update([
+                    'content' => $validatedData['content'],
+                    'upd_date' => now(),  // 수정 일자 업데이트
+                ]);
+
+            return response()->json([
+                'status' => 'success',
+                'content' => $validatedData['content'],
+                'comment_id' => $id,  // 수정된 댓글 ID 반환
+            ]);
+        } catch (\Exception $e) {
+            // 예외 발생 시 상세 오류 메시지 반환
+            return response()->json([
+                'status' => 'error',
+                'message' => '댓글 수정 중 오류가 발생했습니다. 오류 메시지: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     }
 
     public function deleteComments($id)

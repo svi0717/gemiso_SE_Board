@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>게시판 조회</title>
     <link href="{{ asset('css/custom-buttons.css') }}" rel="stylesheet">
-
 </head>
-
-
 <style>
     .table a {
         color: black !important;
@@ -64,6 +62,7 @@
         padding-left: 20px;
     }
 </style>
+
 <body>
 
     @extends('layouts.header')
@@ -121,47 +120,61 @@
                                 @endif
                                 <ul class="comment-list">
                                     @foreach ($comments as $comment)
-                                    <li data-comment-id="{{ $comment->c_id }}">
-                                        <div>
-                                            <strong>{{ $post->user_name }}</strong>
-                                            <p>{{ $comment->content }}</p>
-                                            <small class="text-muted">{{ $comment->reg_date }}</small>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <!-- 왼쪽 버튼들 -->
-                                            <div class="d-flex">
-                                                <button class="btn-custom btn-reply mt-2" data-comment-id="{{ $comment->c_id }}">답글</button>
+                                        <li data-comment-id="{{ $comment->c_id }}">
+                                            <div>
+                                                <strong>{{ $post->user_name }}</strong>
+                                                <p>{{ $comment->content }}</p>
+                                                <small class="text-muted">{{ $comment->reg_date }}</small>
                                             </div>
-                                            <!-- 오른쪽 버튼들 -->
-                                            <div class="d-flex">
-                                                <button class="btn btn-secondary mt-2 mr-1">수정</button>
-                                                <button class="btn btn-danger mt-2 ms-2 btn-delete" data-comment-id="{{ $comment->c_id }}">삭제</button>
-                                            </div>
-                                        </div>
-
-                                        <!-- 답글 목록 표시 -->
-                                        <ul class="reply-list" data-comment-id="{{ (int)$comment->c_id }}" style="display: none;">
-                                            @foreach ($replies->where('parent_id', $comment->c_id) as $reply)
-                                                <li>
-                                                    <strong>{{ $post->user_name }}</strong>
-                                                    <p>{{ $reply->content }}</p>
-                                                    <small class="text-muted">{{ $reply->reg_date }}</small>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-
-                                        <!-- 답글 폼 -->
-                                        <div class="reply-form" style="display: none;">
-                                            <form class="reply-form-content">
-                                                @csrf
-                                                <input type="hidden" name="parent_id" value="{{ (int)$comment->c_id }}">
-                                                <textarea name="content" class="form-control mt-2" style="width: 90%;" rows="2" required></textarea>
-                                                <div class="w-100 d-flex justify-content-end mt-2" style="max-width: 90%;">
-                                                    <button type="submit" class="btn btn-primary">답글 등록</button>
+                                            <div class="d-flex justify-content-between" id="buttonAll">
+                                                <!-- 왼쪽 버튼들 -->
+                                                <div class="d-flex">
+                                                    <button class="btn-custom btn-reply mt-2"
+                                                        data-comment-id="{{ $comment->c_id }}">답글</button>
                                                 </div>
-                                            </form>
-                                        </div>
-                                    </li>
+                                                <!-- 오른쪽 버튼들 -->
+                                                <div class="d-flex">
+                                                    <button class="btn btn-secondary mt-2 btn-edit" data-comment-id="{{ $comment->c_id }}">수정</button>
+                                                    <button class="btn btn-danger mt-2 ms-2 btn-delete" data-comment-id="{{ $comment->c_id }}">삭제</button>
+                                                </div>
+                                            </div>
+                                            <!-- 수정 폼 -->
+                                            <div class="edit-form mt-3" style="display: none;">
+                                                <form class="edit-form-content">
+                                                    @csrf
+                                                    <textarea name="content" class="form-control" rows="2" required></textarea>
+                                                    <div class="d-flex justify-content-end mt-2">
+                                                        <button type="submit" class="btn btn-primary me-2">수정</button>
+                                                        <button type="button" class="btn btn-secondary cancel-edit ml-1">취소</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <!-- 답글 목록 표시 -->
+                                            <ul class="reply-list" data-comment-id="{{ (int) $comment->c_id }}"
+                                                style="display: none;">
+                                                @foreach ($replies->where('parent_id', $comment->c_id) as $reply)
+                                                    <li>
+                                                        <strong>{{ $post->user_name }}</strong>
+                                                        <p>{{ $reply->content }}</p>
+                                                        <small class="text-muted">{{ $reply->reg_date }}</small>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+
+                                            <!-- 답글 폼 -->
+                                            <div class="reply-form" style="display: none;">
+                                                <form class="reply-form-content">
+                                                    @csrf
+                                                    <input type="hidden" name="parent_id"
+                                                        value="{{ (int) $comment->c_id }}">
+                                                    <textarea name="content" class="form-control mt-2" style="width: 90%;" rows="2" required></textarea>
+                                                    <div class="w-100 d-flex justify-content-end mt-2"
+                                                        style="max-width: 90%;">
+                                                        <button type="submit" class="btn btn-primary">답글 등록</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </li>
                                     @endforeach
                                 </ul>
                             </div>
@@ -170,7 +183,8 @@
                         <div class="card-footer text-right">
                             <a href="/boardList" class="btn-custom">목록</a>
                             @if ($userId == $post->user_id)
-                                <a href="{{ route('boards.edit', ['id' => $post->board_id]) }}" class="btn btn-secondary">수정</a>
+                                <a href="{{ route('boards.edit', ['id' => $post->board_id]) }}"
+                                    class="btn btn-secondary">수정</a>
                                 <form action="{{ route('boards.delete', $post->board_id) }}" method="POST"
                                     style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
                                     @csrf
@@ -222,7 +236,8 @@
                                     </tbody>
                                 </table>
                                 <div class="d-flex justify-content-center">
-                                    <button id="loadMoreBtn" class="btn btn-primary mt-2" style="display: none;">더보기</button>
+                                    <button id="loadMoreBtn" class="btn btn-primary mt-2"
+                                        style="display: none;">더보기</button>
                                 </div>
                             @endif
                         </div>
@@ -232,127 +247,213 @@
         </div>
         <script>
             $(document).ready(function() {
-            // 댓글 폼 제출 이벤트 처리
-            $('#comment-form').on('submit', function(e) {
-                e.preventDefault(); // 기본 폼 제출 막기
+                // 댓글 폼 제출 이벤트 처리
+                $('#comment-form').on('submit', function(e) {
+                    e.preventDefault(); // 기본 폼 제출 막기
 
-                $.ajax({
-                    url: '{{ route("comment.insert") }}',  // 댓글 삽입 라우트
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        const newComment = `
-                            <li data-comment-id="${response.comment_id}">
-                                <div>
-                                    <strong>${response.user_name}</strong>
-                                    <p>${response.content}</p>
-                                    <small class="text-muted">${response.reg_date}</small>
+                    $.ajax({
+                        url: '{{ route('comment.insert') }}', // 댓글 삽입 라우트
+                        type: 'POST',
+                        data: $(this).serialize(),
+                        success: function(response) {
+                            const newComment = `
+                    <li data-comment-id="${response.comment_id}">
+                        <div>
+                            <strong>${response.user_name}</strong>
+                            <p>${response.content}</p>
+                            <small class="text-muted">${response.reg_date}</small>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <!-- 왼쪽 버튼들 -->
+                            <div class="d-flex">
+                                <button class="btn-custom btn-reply mt-2">답글</button>
+                            </div>
+                            <!-- 오른쪽 버튼들 -->
+                            <div class="d-flex">
+                                <button class="btn btn-secondary mt-2 btn-edit">수정</button>
+                                <button class="btn btn-danger btn-delete mt-2 ms-2 ml-1">삭제</button>
+                            </div>
+                        </div>
+                        <!-- 답글 목록 표시 -->
+                        <ul class="reply-list"></ul>
+                        <!-- 답글 폼 -->
+                        <div class="reply-form">
+                            <form class="reply-form-content">
+                                @csrf
+                                <input type="hidden" name="parent_id" value="${response.comment_id}">
+                                <textarea name="content" class="form-control mt-2" style="width: 90%;" rows="2" required></textarea>
+                                <div class="w-100 d-flex justify-content-end mt-2" style="max-width: 90%;">
+                                    <button type="submit" class="btn btn-primary">답글 등록</button>
                                 </div>
-                                <div class="d-flex justify-content-between">
-                                    <!-- 왼쪽 버튼들 -->
-                                    <div class="d-flex">
-                                        <button class="btn-custom btn-reply mt-2">답글</button>
-                                    </div>
-                                    <!-- 오른쪽 버튼들 -->
-                                    <div class="d-flex">
-                                        <button class="btn btn-secondary mt-2 mr-1">수정</button>
-                                        <button class="btn btn-danger btn-delete mt-2 ms-2">삭제</button>
-                                    </div>
+                            </form>
+                        </div>
+                        <!-- 수정 폼 -->
+                        <div class="edit-form mt-3" style="display: none;">
+                            <form class="edit-form-content">
+                                @csrf
+                                <textarea name="content" class="form-control" rows="2" required>${response.content}</textarea>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <button type="submit" class="btn btn-primary me-2">수정</button>
+                                    <button type="button" class="btn btn-secondary cancel-edit ml-1">취소</button>
                                 </div>
-                                <!-- 답글 목록 표시 -->
-                                <ul class="reply-list"></ul>
-                                <!-- 답글 폼 -->
-                                <div class="reply-form">
-                                    <form class="reply-form-content">
-                                        @csrf
-                                        <input type="hidden" name="parent_id" value="${response.comment_id}">
-                                        <textarea name="content" class="form-control mt-2" style="width: 90%;" rows="2" required></textarea>
-                                        <div class="w-100 d-flex justify-content-end mt-2" style="max-width: 90%;">
-                                            <button type="submit" class="btn btn-primary">답글 등록</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </li>
-                        `;
+                            </form>
+                        </div>
+                    </li>
+                `;
+                // 댓글을 추가하기 전에 기존 댓글들을 내림차순으로 정렬하고 추가
+                const commentList = $('.comment-list');
+                commentList.prepend(newComment); // 새 댓글을 가장 위에 추가
+                $('#content').val(''); // 댓글 입력 필드 초기화
 
-                        if ($('.comment-list').children().length === 0) {
-                            $('.no-comments').remove();
-                        }
+                if ($('.comment-list').children().length === 0) {
+                    $('.no-comments').remove();
+                }
 
-                        $('.comment-list').append(newComment);
-                        $('#content').val('');
-                    },
-                    error: function(xhr) {
-                        alert('댓글 등록 중 문제가 발생했습니다.');
-                    }
-                });
-            });
-
-            // 답글 버튼 클릭 이벤트 처리
-            $(document).on('click', '.btn-reply', function() {
-                const commentId = $(this).data('comment-id');
-                const parentLi = $(this).closest('li');
-                const replyList = parentLi.find('.reply-list');
-                const replyForm = parentLi.find('.reply-form');
-
-                // 답글 목록과 답글 폼 토글
-                if (replyList.is(':visible') && replyForm.is(':visible')) {
-                    replyList.hide();
-                    replyForm.hide();
-                } else {
-                    replyList.toggle();
-                    replyForm.toggle();
+                $('.comment-list').append(newComment);
+                $('#content').val('');
+            },
+                error: function(xhr) {
+                    alert('댓글 등록 중 문제가 발생했습니다.');
                 }
             });
+        });
 
-            // 답글 폼 제출 이벤트 처리
-            $(document).on('submit', '.reply-form-content', function(e) {
-                e.preventDefault(); // 기본 폼 제출 막기
+                // 답글 버튼 클릭 이벤트 처리
+                $(document).on('click', '.btn-reply', function() {
+                    const commentId = $(this).data('comment-id');
+                    const parentLi = $(this).closest('li');
+                    const replyList = parentLi.find('.reply-list');
+                    const replyForm = parentLi.find('.reply-form');
 
-                const form = $(this);
-                const formData = form.serializeArray();
-
-                // 폼 데이터와 함께 parent_id 출력 확인
-                console.log('Form Data:', formData);
-
-                $.ajax({
-                    url: '{{ route("comment.insert") }}',  // 답글 삽입 라우트
-                    type: 'POST',
-                    data: form.serialize(),
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            const parentLi = form.closest('li');
-                            const replyList = parentLi.find('.reply-list');
-
-                            const newReply = `
-                                <li>
-                                    <div>
-                                        <strong>${response.user_name}</strong>
-                                        <p>${response.content}</p>
-                                        <small class="text-muted">${response.reg_date}</small>
-                                    </div>
-                                </li>
-                            `;
-
-                            if (replyList.is(':hidden')) {
-                                replyList.show();
-                            }
-
-                            replyList.append(newReply);
-                            form[0].reset();
-                        } else {
-                            alert('답글 등록 중 문제가 발생했습니다: ' + response.message);
-                        }
-                    },
-                    error: function(xhr) {
-                        const errorMessage = xhr.responseJSON?.message || '알 수 없는 오류가 발생했습니다.';
-                        alert('답글 등록 중 문제가 발생했습니다: ' + errorMessage);
-                        console.log('error', xhr.responseJSON);
-                    }
+                    // 답글 목록과 답글 폼 토글
+                    replyList.toggle();
+                    replyForm.toggle();
                 });
-            });
 
-            // 댓글 삭제 버튼 클릭 이벤트 처리
+                // 답글 폼 제출 이벤트 처리
+                $(document).on('submit', '.reply-form-content', function(e) {
+                    e.preventDefault(); // 기본 폼 제출 막기
+
+                    const form = $(this);
+                    const formData = form.serializeArray();
+
+                    // 폼 데이터와 함께 parent_id 출력 확인
+                    console.log('Form Data:', formData);
+
+                    $.ajax({
+                        url: '{{ route('comment.insert') }}', // 답글 삽입 라우트
+                        type: 'POST',
+                        data: form.serialize(),
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                const parentLi = form.closest('li');
+                                const replyList = parentLi.find('.reply-list');
+
+                                const newReply = `
+                        <li>
+                            <div>
+                                <strong>${response.user_name}</strong>
+                                <p>${response.content}</p>
+                                <small class="text-muted">${response.reg_date}</small>
+                            </div>
+                        </li>
+                    `;
+
+                    if (replyList.is(':hidden')) {
+                        replyList.show();
+                    }
+
+                    replyList.append(newReply);
+                    form[0].reset();
+                } else {
+                    alert('답글 등록 중 문제가 발생했습니다: ' + response.message);
+                }
+            },
+            error: function(xhr) {
+                const errorMessage = xhr.responseJSON?.message || '알 수 없는 오류가 발생했습니다.';
+                alert('답글 등록 중 문제가 발생했습니다: ' + errorMessage);
+                console.log('error', xhr.responseJSON);
+            }
+        });
+    });
+
+        $(document).on('click', '.btn-edit', function() {
+            const commentId = $(this).data('comment-id');
+            const parentLi = $(this).closest('li');
+            const commentContent = parentLi.find('p').text();  // 기존 댓글 내용
+            const editForm = parentLi.find('.edit-form');
+            const buttons = parentLi.find('.d-flex').not('.edit-form');  // 수정, 답글, 삭제 버튼들
+
+            // 수정 폼의 textarea에 기존 댓글 내용 설정
+            editForm.find('textarea[name="content"]').val(commentContent);
+
+            // 댓글 내용과 버튼 숨기기
+            parentLi.find('p').hide();
+            parentLi.find('.btn-reply').hide();
+            parentLi.find('.btn-edit').hide();
+            parentLi.find('.btn-danger').hide();
+
+
+            // 수정 폼 보여주기
+            editForm.show();
+
+        });
+
+        // 수정 취소 버튼 클릭 시 이벤트 처리
+        $(document).on('click', '.cancel-edit', function() {
+            const parentLi = $(this).closest('li');
+            const commentContent = parentLi.find('p');
+            const buttons = parentLi.find('.d-flex');
+            const editForm = parentLi.find('.edit-form');
+
+            // 댓글 내용과 버튼 다시 보여주기
+            commentContent.show();
+            parentLi.find('.btn-reply').show();
+            parentLi.find('.btn-edit').show();
+            parentLi.find('.btn-danger').show();
+
+            // 수정 폼 숨기기
+            editForm.hide();
+        });
+
+        $(document).on('submit', '.edit-form-content', function(e) {
+            e.preventDefault(); // 기본 폼 제출 막기
+
+            const form = $(this);
+            const id = form.closest('li').data('comment-id');
+            const formData = form.serialize(); // form.serialize()로 폼 데이터를 가져옵니다
+
+            $.ajax({
+                url: `/comments/update/${id}`,  // 댓글 수정 라우트 URL
+                type: 'PUT',  // PUT 메서드를 사용하기 위해 POST로 설정
+                data: formData,
+                success: function(response) {
+                    if (response.status === 'success') {
+                        const parentLi = form.closest('li');
+                        const commentContent = parentLi.find('p');
+
+                        // 수정된 댓글 내용 업데이트
+                        commentContent.text(response.content);
+
+                        // 수정 폼 숨기기, 댓글 내용과 버튼 다시 보여주기
+                        form.closest('.edit-form').hide();
+                        commentContent.show();
+                        parentLi.find('.d-flex').show();
+                        parentLi.find('.btn-reply').show();
+                        parentLi.find('.btn-edit').show();
+                        parentLi.find('.btn-danger').show();
+                    } else {
+                        alert('댓글 수정 중 문제가 발생했습니다.');
+                    }
+                },
+                error: function(xhr) {
+                    console.log('Error Response:', xhr.responseText);  // 오류 메시지 로깅
+                    alert('댓글 수정 중 오류가 발생했습니다.');
+                }
+            });
+        });
+        
+          // 댓글 삭제 버튼 클릭 이벤트 처리
             $(document).on('click', '.btn-delete', function() {
             const commentId = $(this).closest('li').data('comment-id'); // 삭제할 댓글의 ID
             console.log(commentId);  // 삭제될 댓글의 ID를 콘솔에 출력
@@ -387,8 +488,11 @@
                 });
             }
         });
+
     });
+
         </script>
     @endsection
 </body>
+
 </html>
