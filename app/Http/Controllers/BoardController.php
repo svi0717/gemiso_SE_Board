@@ -101,6 +101,14 @@ class BoardController extends Controller
             // 게시물과 연관된 댓글 데이터 가져오기
             $comments = DB::table('gemiso_se.comments')
                 ->where('board_id', $id)
+                ->orderBy('reg_date', 'desc')
+                ->get();
+
+
+            $commentIds = $comments->pluck('c_id');
+
+            $replies = DB::table('gemiso_se.comments')
+                ->whereIn('parent_id', $commentIds)
                 ->get();
 
             // 뷰로 데이터 전달
@@ -111,6 +119,7 @@ class BoardController extends Controller
                 'files' => $files,
                 'type' => 'board',
                 'comments' => $comments,
+                'replies' => $replies,
                 'board_id' => $id
             ]);
         } catch (\Exception $e) {
@@ -176,11 +185,19 @@ class BoardController extends Controller
                     'deleted_at' => now()
                 ]);
 
+            DB::table('gemiso_se.comments')  // 댓글 테이블명으로 변경 필요
+            ->where('board_id', $id)  // 댓글과 게시글을 연결하는 외래 키 필드명으로 변경 필요
+            ->update([
+                'delete_yn' => 'Y',
+                'deleted_at' => now()
+            ]);
+
             return redirect()->route('boardList')->with('success', '게시글 및 연동된 일정들이 성공적으로 삭제되었습니다.');
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+
     public function insertBoard(Request $request)
     {
         try {
@@ -265,36 +282,113 @@ class BoardController extends Controller
 
     public function Insertcomment(Request $request)
     {
-        $user_id = Auth::user()->user_id;
+        try {
+            $user = Auth::user();
 
-        // 요청 데이터 검증
-        $validated = $request->validate([
-            'content' => 'required|string',
-            'board_id' => 'nullable|integer'
-        ]);
+            // 사용자 인증 확인
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => '사용자가 인증되지 않았습니다.'
+                ], 401); // 401 Unauthorized 응답
+            }
 
-        $board_id = $validated['board_id'] ?? null;
+            // 요청 데이터 검증
+            $validated = $request->validate([
+                'content' => 'required|string',
+                'board_id' => 'nullable|integer',
+                'parent_id' => 'nullable|integer'
+            ]);
 
-        // 댓글 데이터 삽입
-        $commentId = DB::table('gemiso_se.comments')->insertGetId([
-            'user_id' => $user_id,
-            'content' => $validated['content'],
-            'reg_date' => now()->format('Y-m-d H:i:s'),
-            'delete_yn' => 'N',
-            'board_id' => $board_id,
-        ], 'c_id');  // 'c_id'를 사용하여 실제 칼럼 이름을 명시
+            $user_id = $user->user_id;
+            $board_id = $validated['board_id'] ?? null;
+            $parent_id = $validated['parent_id'] ?? null;
 
-        // 삽입된 댓글을 조회하여 Ajax 응답으로 반환
-        $comment = DB::table('gemiso_se.comments')
-            ->where('c_id', $commentId)
-            ->first();
+            // 댓글 또는 답글 데이터 삽입
+            $commentId = DB::table('gemiso_se.comments')->insertGetId([
+                'user_id' => $user_id,
+                'content' => $validated['content'],
+                'reg_date' => now(),
+                'delete_yn' => 'N',
+                'board_id' => $board_id,
+                'parent_id' => $parent_id
+            ], 'c_id');
 
-        return response()->json([
-            'status' => 'success',
-            'content' => $comment->content,
-            'user_name' => Auth::user()->name,
-            'reg_date' => $comment->reg_date
-        ]);
+            // 삽입된 댓글을 조회하여 Ajax 응답으로 반환
+            $comment = DB::table('gemiso_se.comments')
+                ->where('c_id', $commentId)
+                ->first();
+
+            return response()->json([
+                'status' => 'success',
+                'comment_id' => $comment->c_id,
+                'content' => $comment->content,
+                'user_name' => $user->name,
+                'reg_date' => $comment->reg_date
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => '댓글 등록 중 문제가 발생했습니다.'
+            ], 500); // 500 Internal Server Error 응답
+        }
     }
 
+    public function updatecomment(Request $request, $id)
+    {
+        try {
+            // 입력 데이터 검증
+            $validatedData = $request->validate([
+                'content' => 'required|string|max:500',
+            ]);
+
+            // 댓글 찾기
+            $comment = DB::table('gemiso_se.comments')->where('c_id', $id)->first();
+
+            if (!$comment) {
+                return response()->json(['status' => 'error', 'message' => '댓글을 찾을 수 없습니다.'], 404);
+            }
+
+            // 댓글 업데이트
+            DB::table('gemiso_se.comments')
+                ->where('c_id', $id)
+                ->update([
+                    'content' => $validatedData['content'],
+                    'upd_date' => now(),  // 수정 일자 업데이트
+                ]);
+
+            return response()->json([
+                'status' => 'success',
+                'content' => $validatedData['content'],
+                'comment_id' => $id,  // 수정된 댓글 ID 반환
+            ]);
+        } catch (\Exception $e) {
+            // 예외 발생 시 상세 오류 메시지 반환
+            return response()->json([
+                'status' => 'error',
+                'message' => '댓글 수정 중 오류가 발생했습니다. 오류 메시지: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+
+    public function deleteComments($c_id)
+    {
+        try {
+            // 게시글을 ID를 사용하여 삭제
+            DB::table('gemiso_se.comments')
+            ->where('c_id', $c_id)
+            ->update([
+                'delete_yn' => 'Y',
+                'deleted_at' => now()
+            ]);
+
+            return redirect()->route('schedule')->with('success', '일정이 성공적으로 삭제되었습니다.');
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
 }
