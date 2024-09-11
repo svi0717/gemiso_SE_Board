@@ -80,6 +80,7 @@ class BoardController extends Controller
                 ->leftJoin('gemiso_se.users', 'gemiso_se.board.user_id', '=', 'gemiso_se.users.user_id')
                 ->select('gemiso_se.board.*', 'gemiso_se.users.name as user_name')
                 ->where('gemiso_se.board.board_id', $id)
+                ->where('gemiso_se.board.delete_yn', '=', 'N')
                 ->first();
 
             if (!$post) {
@@ -91,18 +92,22 @@ class BoardController extends Controller
 
             // 게시물과 연관된 일정 데이터 가져오기
             $schedules = DB::table('gemiso_se.schedule')
+                ->leftJoin('gemiso_se.users', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.users.user_id')
+                ->select('gemiso_se.schedule.*', 'gemiso_se.users.name as user_name')
                 ->where('board_id', $id)
                 ->where('gemiso_se.schedule.delete_yn', '=', 'N')
                 ->get();
 
             // 게시물과 연관된 파일 데이터 가져오기
             $files = DB::table('gemiso_se.files')
-                ->where('board_id', $id)
-                ->where('gemiso_se.files.delete_yn', '=', 'N')
-                ->get();
+            ->where('board_id', $id)
+            ->where('gemiso_se.files.delete_yn', '=', 'N')
+            ->get();
 
             // 게시물과 연관된 댓글 데이터 가져오기
             $comments = DB::table('gemiso_se.comments')
+                ->leftJoin('gemiso_se.users', 'gemiso_se.comments.user_id', '=', 'gemiso_se.users.user_id')
+                ->select('gemiso_se.comments.*', 'gemiso_se.users.name as user_name')
                 ->where('board_id', $id)
                 ->where('gemiso_se.comments.delete_yn', '=', 'N')
                 ->orderBy('reg_date', 'desc')
@@ -111,6 +116,8 @@ class BoardController extends Controller
             $commentIds = $comments->pluck('c_id');
 
             $replies = DB::table('gemiso_se.comments')
+                ->leftJoin('gemiso_se.users', 'gemiso_se.comments.user_id', '=', 'gemiso_se.users.user_id')
+                ->select('gemiso_se.comments.*', 'gemiso_se.users.name as user_name')
                 ->where('gemiso_se.comments.delete_yn', '=', 'N')
                 ->orderBy('reg_date', 'asc')
                 ->whereIn('parent_id', $commentIds)
@@ -125,12 +132,14 @@ class BoardController extends Controller
                 'type' => 'board',
                 'comments' => $comments,
                 'replies' => $replies,
-                'board_id' => $id,
+                'board_id' => $id
             ]);
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
+
 
 
     public function edit($id)

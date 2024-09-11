@@ -3,13 +3,13 @@ CREATE TABLE gemiso_se.board (
 	title varchar(30) NOT NULL,
 	user_id varchar(30) NOT NULL,
 	"content" varchar NOT NULL,
-	reg_date date NULL,
-	upd_date date NULL,
+	reg_date timestamp NULL,
+	upd_date timestamp NULL,
 	delete_yn bpchar(1) NULL,
 	deleted_at date NULL,
 	"views" numeric NULL,
 	CONSTRAINT board_pk PRIMARY KEY (board_id),
-	CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES gemiso_se."users"(user_id)
+	CONSTRAINT user_fk FOREIGN KEY (user_id) REFERENCES gemiso_se.users(user_id)
 );
 
 CREATE TABLE gemiso_se.schedule (

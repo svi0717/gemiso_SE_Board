@@ -122,7 +122,7 @@
                                     @foreach ($comments as $comment)
                                         <li data-comment-id="{{ $comment->c_id }}">
                                             <div>
-                                                <strong>{{ $post->user_name }}</strong>
+                                                <strong>{{ $comment->user_name }}</strong>
                                                 <p>{{ $comment->content }}</p>
                                                 <small class="text-muted">{{ \Carbon\Carbon::parse($comment->reg_date)->format('Y-m-d');}}</small>
                                             </div>
@@ -158,11 +158,13 @@
                                                     <li data-comment-id="{{ $comment->c_id }}">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <div>
-                                                                <strong>{{ $post->user_name }}</strong>
+                                                                <strong>{{ $reply->user_name }}</strong>
                                                                 <p>{{ $reply->content }}</p>
                                                                 <small class="text-muted">{{ \Carbon\Carbon::parse($reply->reg_date)->format('Y-m-d') }}</small>
                                                             </div>
+                                                            @if ($userId == $comment->user_id)
                                                             <button class="btn btn-danger mt-5 btn-delete" data-comment-id="{{ $comment->c_id }}">삭제</button>
+                                                            @endif
                                                         </div>
                                                     </li>
                                                 @endforeach
@@ -232,7 +234,7 @@
                                                 <td class="text-truncate" style="max-width: 250px;">
                                                     <a href="{{ route('schedules.show', $item->sch_id) }}?previous_url={{ urlencode(route('schedule')) }}">{{ $item->title }}</a>
                                                 </td>
-                                                <td>{{ $post->user_name }}</td>
+                                                <td>{{ $item->user_name }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($item->reg_date)->format('Y-m-d') }}</td>
                                                 <td>{{ $item->start_date }}</td>
                                                 <td>{{ $item->end_date }}</td>

@@ -92,7 +92,7 @@
                     </td>
                     <td>{{ $item->user_name }}</td>
                     <td>{{ \Carbon\Carbon::parse($item->reg_date)->format('Y-m-d') }}</td>
-                    <td>{{ $item->upd_date }}</td>
+                    <td>{{ \Carbon\Carbon::parse($item->upd_date)->format('Y-m-d') }}</td>
                     <td>{{ $item->views }}</td>
                 </tr>
                 @endforeach
