@@ -101,13 +101,15 @@ class BoardController extends Controller
             // 게시물과 연관된 댓글 데이터 가져오기
             $comments = DB::table('gemiso_se.comments')
                 ->where('board_id', $id)
+                ->where('gemiso_se.comments.delete_yn', '=', 'N')
                 ->orderBy('reg_date', 'desc')
                 ->get();
-
 
             $commentIds = $comments->pluck('c_id');
 
             $replies = DB::table('gemiso_se.comments')
+                ->where('gemiso_se.comments.delete_yn', '=', 'N')
+                ->orderBy('reg_date', 'asc')
                 ->whereIn('parent_id', $commentIds)
                 ->get();
 
@@ -372,23 +374,33 @@ class BoardController extends Controller
         }
     }
 
+    }
 
-
-
-    public function deleteComments($c_id)
+    public function deleteComments($id)
     {
         try {
-            // 게시글을 ID를 사용하여 삭제
-            DB::table('gemiso_se.comments')
-            ->where('c_id', $c_id)
-            ->update([
-                'delete_yn' => 'Y',
-                'deleted_at' => now()
-            ]);
+            $comment = DB::table('gemiso_se.comments')->where('c_id', $id)->first();
 
-            return redirect()->route('schedule')->with('success', '일정이 성공적으로 삭제되었습니다.');
+            if (!$comment) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => '댓글을 찾을 수 없습니다.'
+                ], 404);
+            }
+
+            // 댓글 삭제 (soft delete를 고려하여 delete_yn 필드로 처리)
+            DB::table('gemiso_se.comments')->where('c_id', $id)->update(['delete_yn' => 'Y']);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => '댓글이 삭제되었습니다.',
+                'comment_id' => $id
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => '댓글 삭제 중 오류가 발생했습니다.'
+            ], 500);
         }
     }
 }
