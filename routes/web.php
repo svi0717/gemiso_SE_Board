@@ -113,3 +113,8 @@ Route::post('/update-event', [ScheduleController::class, 'updateEvent'])->name('
 // 댓글 부분 라우트
 Route::post('/insertcomment', [BoardController::class, 'Insertcomment'])->name('comment.insert');
 
+Route::post('/comment/reply', [BoardController::class, 'insertReply'])->name('comment.reply');
+
+Route::delete('/comment/delete/{id}', [BoardController::class, 'deleteComments'])->name('comment.delete');
+
+
