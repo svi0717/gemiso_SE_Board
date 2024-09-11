@@ -135,7 +135,7 @@
                                             <!-- 오른쪽 버튼들 -->
                                             <div class="d-flex">
                                                 <button class="btn btn-secondary mt-2 mr-1">수정</button>
-                                                <button class="btn btn-danger mt-2 ms-2">삭제</button>
+                                                <button class="btn btn-danger mt-2 ms-2 btn-delete" data-comment-id="{{ $comment->c_id }}">삭제</button>
                                             </div>
                                         </div>
 
@@ -251,12 +251,12 @@
                                 <div class="d-flex justify-content-between">
                                     <!-- 왼쪽 버튼들 -->
                                     <div class="d-flex">
-                                        <button class="btn-custom btn-reply mt-2" data-comment-id="${response.comment_id}">답글</button>
+                                        <button class="btn-custom btn-reply mt-2">답글</button>
                                     </div>
                                     <!-- 오른쪽 버튼들 -->
                                     <div class="d-flex">
                                         <button class="btn btn-secondary mt-2 mr-1">수정</button>
-                                        <button class="btn btn-danger mt-2 ms-2">삭제</button>
+                                        <button class="btn btn-danger btn-delete mt-2 ms-2">삭제</button>
                                     </div>
                                 </div>
                                 <!-- 답글 목록 표시 -->
@@ -351,7 +351,43 @@
                     }
                 });
             });
+
+            // 댓글 삭제 버튼 클릭 이벤트 처리
+            $(document).on('click', '.btn-delete', function() {
+            const commentId = $(this).closest('li').data('comment-id'); // 삭제할 댓글의 ID
+            console.log(commentId);  // 삭제될 댓글의 ID를 콘솔에 출력
+            if (confirm('정말 삭제하시겠습니까?')) {
+                $.ajax({
+                    url: `/comment/delete/${commentId}`,  // 댓글 삭제 라우트 URL
+                    type: 'POST',  // POST 메서드 사용
+                    data: {
+                        _token: '{{ csrf_token() }}',  // CSRF 토큰 포함
+                        _method: 'DELETE'  // DELETE 요청임을 명시
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            console.log('댓글 삭제 성공:', response); // 성공 시 응답을 콘솔에 출력
+
+                            // 삭제된 댓글을 UI에서 제거
+                            $(`li[data-comment-id="${commentId}"]`).remove();
+
+                            // 댓글이 모두 삭제된 경우 "댓글이 없습니다" 메시지를 추가
+                            if ($('.comment-list').children().length === 0) {
+                                $('.comment-list').append('<p class="no-comments">댓글이 없습니다.</p>');
+                            }
+                        } else {
+                            alert('댓글 삭제 중 문제가 발생했습니다: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        const errorMessage = xhr.responseJSON?.message || '알 수 없는 오류가 발생했습니다.';
+                        alert('댓글 삭제 중 문제가 발생했습니다: ' + errorMessage);
+                        console.error('AJAX 오류:', xhr);  // 에러 로그 출력
+                    }
+                });
+            }
         });
+    });
         </script>
     @endsection
 </body>
