@@ -24,7 +24,6 @@
     <link href='css/main.css' rel='stylesheet' />
     <script src='js/main.js'></script>
     <script src='js/locales-all.js'></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');

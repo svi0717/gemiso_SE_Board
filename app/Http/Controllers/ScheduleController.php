@@ -16,7 +16,6 @@ class ScheduleController extends Controller
             ->leftjoin('gemiso_se.users', 'gemiso_se.schedule.user_id', '=', 'gemiso_se.users.user_id')
             ->select(
                 'gemiso_se.schedule.*',
-                // 'gemiso_se.schedule.*',
                 'gemiso_se.users.name as user_name',
             )
             ->where('gemiso_se.schedule.delete_yn', '=', 'N');

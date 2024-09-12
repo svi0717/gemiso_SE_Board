@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>비밀번호 재설정</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 </head>
 <style>
     html, body {
@@ -35,7 +33,7 @@
         <div class="text-center mb-4">
             <h4>비밀번호 재설정</h4>
         </div>
-        <form action="{{ route('updatePassword') }}" method="POST">
+        <form action="{{ route('updatePassword') }}" method="POST" id="updatePasswordForm">
             @csrf
             <input type="hidden" name="user_id" value="{{ $user_id }}">
             <div class="mb-3">
@@ -50,6 +48,26 @@
         </form>
     </div>
 </div>
+<script>
+    document.getElementById('updatePasswordForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 기본 폼 제출 방지
+
+        const newPassword = document.getElementById('new_password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+
+        if (newPassword !== confirmPassword) {
+            // 비밀번호와 비밀번호 확인이 일치하지 않는 경우 SweetAlert로 알림
+            Swal.fire({
+                icon: 'error',
+                title: '비밀번호 불일치',
+                text: '비밀번호와 비밀번호 확인이 일치하지 않습니다.',
+            });
+        } else {
+            // 비밀번호가 일치하면 폼을 제출
+            this.submit();
+        }
+    });
+</script>
 @endsection
 </body>
 </html>

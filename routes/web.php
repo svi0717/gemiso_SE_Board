@@ -22,6 +22,14 @@ Route::view('/findPassword', 'findPassword');
 Route::post('/find-Password', [UserController::class, 'findPassword'])->name('findPassword');
 Route::post('/password/update', [UserController::class, 'updatePassword'])->name('updatePassword');
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+Route::get('/findIdCompleted',[UserController::class, 'findIdCompleted'])->name('findIdCompleted');
+Route::get('/findPasswordCompleted',  [UserController::class, 'findPasswordCompleted'])->name('findPasswordCompleted');
+Route::get('/join', function() {
+    return view('join');
+});
+Route::post('/check-user-id', [UserController::class, 'checkUserId'])->name('checkUserId');
+
+
 
 // CheckAuth와 PreventBackHistory 미들웨어를 묶은 그룹
 Route::middleware([CheckAuth::class, PreventBackHistory::class])->group(function() {
@@ -44,6 +52,7 @@ Route::middleware([CheckAuth::class, PreventBackHistory::class])->group(function
     Route::get('/schedule/{sch_id}/editschedule', [ScheduleController::class, 'editSchedule'])->name('schedules.edit');
     Route::put('/schedule/{sch_id}', [ScheduleController::class, 'updateSchedule'])->name('schedules.update');
     Route::delete('/schedule/{sch_id}', [ScheduleController::class, 'deleteSchedule'])->name('schedules.delete');
+    Route::post('/update-event', [ScheduleController::class, 'updateEvent'])->name('updateEvent');
 
     // 댓글 관련 라우트
     Route::post('/insertcomment', [BoardController::class, 'Insertcomment'])->name('comment.insert');

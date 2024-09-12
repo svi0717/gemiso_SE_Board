@@ -12,21 +12,8 @@
 @section('title', '일정 등록')
 
 @section('content')
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<!-- Include Summernote CSS for Bootstrap 4 -->
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
 
-<!-- Include Popper.js for Bootstrap -->
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 
-<!-- Include Bootstrap JS -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-<!-- Include Summernote JS for Bootstrap 4 -->
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-ko-KR.min.js"></script>
     <div class="container mt-5">
         <div class="row mb-4">
             <div class="col-12 centered-form">
@@ -53,10 +40,10 @@
 
                     <div class="mb-3" id="dateFields">
                         <label for="start_date" class="form-label">시작 날짜</label>
-                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ request()->get('start_date') }}">
+                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ request()->get('start_date') }}" >
 
                         <label for="end_date" class="form-label mt-2">종료 날짜</label>
-                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ request()->get('end_date') }}">
+                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ request()->get('end_date') }}" >
                     </div>
 
                     <div class="mb-3">
@@ -69,7 +56,7 @@
                     </div>
                     <input type="hidden" name="user_id" value="{{ $userId }}">
                     <div class="text-right">
-                        <button type="submit" class="btn btn-primary">등록</button>
+                        <button type="submit" class="btn btn-primary" onclick="return validateDates(event)">등록</button>
                     </div>
                 </form>
             </div>
@@ -136,6 +123,32 @@
             $('#summernote').val(summernoteContent);
         });
     });
+    function validateDates(event) {
+        const startDate = document.getElementById('start_date').value;
+        const endDate = document.getElementById('end_date').value;
+
+        if (!startDate) {
+            Swal.fire({
+                icon: 'warning',
+                title: '시작 날짜 선택 필요',
+                text: '시작 날짜를 선택해야 합니다.',
+            });
+            event.preventDefault(); // 폼 제출 중지
+            return false;
+        }
+
+        if (!endDate) {
+            Swal.fire({
+                icon: 'warning',
+                title: '종료 날짜 선택 필요',
+                text: '종료 날짜를 선택해야 합니다.',
+            });
+            event.preventDefault(); // 폼 제출 중지
+            return false;
+        }
+
+        return true;
+    }
     </script>
 
 @endsection
