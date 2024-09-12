@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>일정 목록</title>
 </head>
-<link href="{{ asset('css/custom-buttons.css') }}" rel="stylesheet">
 <style>
     .col-md-12 {
         margin-left: 315px;

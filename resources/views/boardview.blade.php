@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>게시판 조회</title>
-    <link href="{{ asset('css/custom-buttons.css') }}" rel="stylesheet">
 </head>
 <style>
     .table a {
@@ -152,10 +151,9 @@
                                                 </form>
                                             </div>
                                             <!-- 답글 목록 표시 -->
-                                            <ul class="reply-list" data-comment-id="{{ $comment->c_id }}"
-                                                style="display: none;">
+                                            <ul class="reply-list" data-comment-id="{{ $comment->c_id }}" style="display: none;">
                                                 @foreach ($replies->where('parent_id', $comment->c_id) as $reply)
-                                                    <li data-comment-id="{{ $comment->c_id }}">
+                                                    <li data-comment-id="{{ $reply->c_id }}">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <div>
                                                                 <strong>{{ $reply->user_name }}</strong>
@@ -163,7 +161,7 @@
                                                                 <small class="text-muted">{{ \Carbon\Carbon::parse($reply->reg_date)->format('Y-m-d') }}</small>
                                                             </div>
                                                             @if ($userId == $reply->user_id)
-                                                            <button class="btn btn-danger mt-5 btn-delete" data-comment-id="{{ $comment->c_id }}">삭제</button>
+                                                            <button class="btn btn-danger mt-5 btn-deleteReply" data-comment-id="{{ $reply->c_id }}">삭제</button>
                                                             @endif
                                                         </div>
                                                     </li>
@@ -365,7 +363,7 @@
                                     <p>${response.content}</p>
                                     <small class="text-muted">${response.reg_date}</small>
                                 </div>
-                                <button class="btn btn-danger btn-delete mt-5" data-comment-id="${response.comment_id}">삭제</button>
+                                <button class="btn btn-danger btn-deleteReply mt-5" data-comment-id="${response.comment_id}">삭제</button>
                             </div>
                         </li>
                     `;
@@ -503,6 +501,36 @@
             }
         });
 
+        $(document).on('click', '.btn-deleteReply', function() {
+        const parentId = $(this).data('comment-id');  // 삭제할 댓글의 ID
+        console.log('parentId ::: ', parentId);  // 삭제될 댓글의 ID를 콘솔에 출력
+        if (confirm('정말 삭제하시겠습니까?')) {
+            $.ajax({
+                url: `/comment/delete/${parentId}`,  // 댓글 삭제 라우트 URL
+                type: 'POST',  // POST 메서드 사용
+                data: {
+                    _token: '{{ csrf_token() }}',  // CSRF 토큰 포함
+                    _method: 'DELETE'  // DELETE 요청임을 명시
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        console.log('답글 삭제 성공:', response); // 성공 시 응답을 콘솔에 출력
+
+                        // 삭제된 댓글을 UI에서 제거
+                        $(`li[data-comment-id="${parentId}"]`).remove();
+
+                    } else {
+                        alert('답글 삭제 중 문제가 발생했습니다: ' + response.message);
+                    }
+                },
+                error: function(xhr) {
+                    const errorMessage = xhr.responseJSON?.message || '알 수 없는 오류가 발생했습니다.';
+                    alert('답글 삭제 중 문제가 발생했습니다: ' + errorMessage);
+                    console.error('AJAX 오류:', xhr);
+                }
+            });
+        }
+    });
     });
 
         </script>
