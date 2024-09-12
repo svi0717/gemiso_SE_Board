@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -29,7 +30,10 @@ class UserController extends Controller
             return redirect()->route('boardList');
         }
 
-        return view('login');
+        // 쿠키에서 'user_id' 값 가져오기
+        $user_id = request()->cookie('user_id');
+
+        return view('login', ['user_id' => $user_id]);
     }
 
     public function register(Request $request)
@@ -86,30 +90,41 @@ class UserController extends Controller
     }
 
     public function login(Request $request)
-{
-    if (Auth::check()) {
-        return redirect()->route('boardList');
+    {
+
+        // 입력받은 자격 증명
+        $credentials = $request->only('user_id', 'password');
+
+        // 자격 증명 확인
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            // 아이디 저장 처리
+            if ($request->has('save_id')) {
+                Cookie::queue(Cookie::make('user_id', $request->input('user_id'), 60 * 24 * 30)); // 30일 동안 유효
+            } else {
+                Cookie::queue(Cookie::forget('user_id'));
+            }
+
+            // 자동 로그인 처리
+            if ($request->has('remember')) {
+                Auth::login(Auth::user(), true); // 세션과 쿠키에 사용자 정보를 저장
+            }
+
+            return redirect()->route('boardList')->with('success', '로그인 성공');
+        }
+
+        return redirect()->back()->with('error', '아이디 또는 비밀번호가 일치하지 않습니다.');
     }
-
-    $credentials = $request->only('user_id', 'password');
-
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-        return redirect()->route('boardList')->with('success', '로그인 성공');
-    }
-
-    return redirect()->back()->with('error', '아이디 또는 비밀번호가 일치하지 않습니다.');
-}
 
     public function logout(Request $request)
     {
-        Auth::logout(); // 사용자 로그아웃
-        $request->session()->invalidate(); // 세션 무효화
-        $request->session()->regenerateToken(); // CSRF 토큰 재생성
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect('/');
     }
-
     public function checkUserId(Request $request)
     {
         $userId = $request->input('user_id');
@@ -185,4 +200,6 @@ class UserController extends Controller
      {
          return view('findPasswordCompleted'); // 결과 페이지 뷰 파일
      }
+
+
 }
